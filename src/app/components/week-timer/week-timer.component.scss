@@ -1,0 +1,33 @@
+@import "../../../style/colors.scss";
+@import "../../../style/panes.scss";
+
+.week-timer {
+    font-size: 1em;
+    .day-timer-label {
+        display: inline-block;
+        width: 5em;
+        padding-top:6px;
+        vertical-align: top;
+    }
+    .day-timer-content {
+        display: inline-block;
+    }
+    .day-rect {
+        fill: white;
+        stroke: $day-rect-stroke;
+        stroke-width: 1px;
+    }
+    .day-rect-period {
+        fill: $day-period-fill;
+        fill-opacity: 0.4;
+    }
+    .plus-text {
+        font-size: 20px;
+        text-anchor: middle;
+        font-weight: bold;
+    }
+    .add-event {
+        text-align: right;
+        padding-bottom: 0.5em;
+    }
+}

@@ -1,0 +1,33 @@
+@import "../../../style/panes.scss";
+@import "../../../style/temperatures.scss";
+
+.list-item {
+    display: table;
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 2px;
+    //padding: 4px 6px;
+    background-color: #404040;
+    width:100%;
+    cursor: pointer;
+}
+.temperature {
+    display: table-cell;
+    opacity: 0.8;
+    color: black;
+    text-align: center;
+    width: 2.6em;
+    height: 2.6em;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.list-text {
+    display: table-cell;
+    color: white;
+    //line-height: 2.6em;
+    padding-left: 1em;
+    padding-right: 1em;
+    vertical-align: middle;
+    //padding-top: 0.5em;
+}
+

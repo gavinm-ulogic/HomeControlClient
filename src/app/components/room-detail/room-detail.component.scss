@@ -1,0 +1,16 @@
+@import "../../../style/panes.scss";
+@import "../../../style/temperatures.scss";
+
+.heaters {
+    background-color: #fff8f8;
+    width: 100%;
+}
+
+.sensors {
+    background-color: #f8ffff;
+    width: 100%;
+}
+
+.temperature {
+    color: black;
+}

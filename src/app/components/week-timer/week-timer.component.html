@@ -1,0 +1,34 @@
+<div class="week-timer">
+    <div class="section{{this.viewLevel}}">
+        <div class="title{{this.viewLevel}}">Events <span *ngIf="subjectEvents.length==0">(none)</span></div>
+        <div class="add-event">
+            <svg height="20" width="240">
+                <g (click)="addNewEvent('subjectEvents', 0)">
+                    <rect x=0 y=0 width=70 height=20 class=day-rect></rect>
+                    <text x=35 y=18 class="plus-text">+</text>
+                </g>
+                <g (click)="addNewEvent('subjectEvents', 31)">
+                    <rect x=80 y=0 width=70 height=20 class=day-rect></rect>
+                    <rect x=80 y=0 width=50 height=20 class=day-rect-period></rect>
+                    <text x=105 y=18 class="plus-text">+</text>
+                </g>
+                <g (click)="addNewEvent('subjectEvents', 96)">
+                    <rect x=160 y=0 width=70 height=20 class=day-rect></rect>
+                    <rect x=210 y=0 width=20 height=20 class=day-rect-period></rect>
+                    <text x=220 y=18 class="plus-text">+</text>
+                </g>
+            </svg>
+        </div>
+        <div *ngIf="newEvent=='subjectEvents'">
+                <div class="app-day-timer-content">
+                <app-day-timer [periods]="[{subjectId: subject.id, isGroup: false}]" [newEvent]="true" [dayFilter]="newEventFilter"></app-day-timer>
+            </div>
+        </div>
+        <div *ngFor="let dayFilter of subjectDayList">
+            <div>
+                <div class="app-day-timer-content"><app-day-timer [periods]="subjectEvents" [dayFilter]="dayFilter"></app-day-timer></div>
+            </div>
+        </div>
+    </div>
+</div>
+

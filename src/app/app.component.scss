@@ -1,0 +1,49 @@
+.wrapper {
+    // display: table;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.row {
+    display: table-row;
+}
+
+.cell {
+    display: table-cell;
+}
+
+.view-dual {
+    .left-side {
+        display: inline-block;
+        width: 25%;
+        vertical-align: top;
+    }
+    .right-side {
+        display: inline-block;
+        width: 75%;
+        vertical-align: top;
+    }
+}
+
+.view-single {
+    .left-side {
+        width: 100%;
+    }
+    .right-side {
+        width: 100%;
+    }
+}
+
+.content-detail {
+    position: relative;
+}
+
+.nav-back {
+    position: absolute;
+    // padding: 10px;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    font-size: 2em;
+    color: gold;
+}

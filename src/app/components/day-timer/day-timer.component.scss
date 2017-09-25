@@ -1,0 +1,55 @@
+@import "../../../style/colors.scss";
+
+.day-timer {
+    width: 100%;
+    .hour-text {
+        font-size: 0.6em;
+        fill: #d0d0d0;
+        stroke: none;
+    }
+    .day-bar {
+    }
+    .period {
+        fill: $day-period-fill;
+        fill-opacity: 0.4;
+    }
+    .day-rect {
+        stroke-width: 1;
+        stroke: $day-rect-stroke;
+        fill: white;
+    }
+    .period-new {
+        fill: $period-new;
+    }
+    .period-selected {
+        fill: $period-selected;
+    }
+    .button-small {
+        font-size: 0.6em;
+        width: 3.2em;
+        height: 3.2em;
+        padding: 0;
+        margin: 1px;
+    }
+    .button-selected {
+        background-color: $day-button-selected;
+    }
+    .action-icon {
+        //display: inline-block;
+        float: right;
+        width: 1em;
+        height: 1em;
+        font-size: 1em;
+        line-height: 20px;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
+    .day-label {
+        display: inline-block;
+        padding-right: 1em;
+        padding-left: 0.6em;
+    }
+    .day-buttons {
+        display: inline-block;
+    }
+}

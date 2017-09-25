@@ -1,0 +1,30 @@
+<div class="day-timer" (window:resize)="handleResize($event)">
+    <div class="day-label">{{dayLabel}}</div>
+    <div *ngIf="newEvent" class="day-buttons">
+        <span>repeating</span> <input type="checkbox" [(ngModel)]="repeating">
+        <button *ngFor="let day of dayArray" [disabled]="!repeating" (click)="day.selected=!day.selected" class="button-small" [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}">{{day.name}}</button>
+    </div>
+    <div class="action-icon" (click)="addNewEvent()"><span class="glyphicon glyphicon-plus"></span></div>
+    <div *ngIf="showCommit" class="action-icon" (click)="handleCommit()"><span class="glyphicon glyphicon-ok"></span></div>
+    <div class="day-bar">
+        <svg [attr.width]="ctrlWidth" height="50">
+            <rect x="" [attr.x]="barLeft" y="10" [attr.width]="barWidth" height="30" class="day-rect"></rect>
+            <g *ngFor="let hour of hours; let idx = index">
+                <text x=0 [attr.x]="barLeft + idx * (barWidth)/24" y="8" text-anchor="middle" class="hour-text">{{hour}}</text>
+                <g *ngIf="hour > 0">
+                    <line x1=0 x2=0 [attr.x1]="barLeft + idx * (barWidth)/24" y1="10" [attr.x2]="barLeft + idx * (barWidth)/24" y2="40" stroke-width="1" stroke="gray"></line>
+                </g>
+            </g>
+            <g *ngFor="let period of periods">
+                <rect *ngIf="isValidPeriod(period)" [attr.x]="getPeriodStartX(period)" y="10" [attr.width]="getPeriodWidth(period)" height="30"
+                    class="period" [ngClass]="{'period-selected' : period == selectedPeriod, 'period-new': period.id <= 0}"
+                    (tap)="onTapPeriod($event, period)"
+                    (panstart)="onDragPeriod($event, period)" (pan)="onDragPeriod($event, period)" (panend)="onDragPeriod($event, period)"></rect>
+                <circle *ngIf="selectedPeriod && isValidPeriod(period) && period == selectedPeriod" [attr.cx]="getPeriodStartX(period)" cy="25" r="14"
+                    (panstart)="onDragTimeStart($event, period)" (pan)="onDragTimeStart($event, period)" (panend)="onDragTimeStart($event, period)"></circle>
+                <circle *ngIf="selectedPeriod && isValidPeriod(period) && period == selectedPeriod" [attr.cx]="getPeriodEndX(period)" cy="25" r="14"
+                    (panstart)="onDragTimeEnd($event, period)" (pan)="onDragTimeEnd($event, period)" (panend)="onDragTimeEnd($event, period)"></circle>
+            </g>
+        </svg>
+    </div>
+</div>
