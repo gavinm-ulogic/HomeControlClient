@@ -2,28 +2,7 @@
 
 .day-timer {
     width: 100%;
-    .hour-text {
-        font-size: 0.6em;
-        fill: #d0d0d0;
-        stroke: none;
-    }
-    .day-bar {
-    }
-    .period {
-        fill: $day-period-fill;
-        fill-opacity: 0.4;
-    }
-    .day-rect {
-        stroke-width: 1;
-        stroke: $day-rect-stroke;
-        fill: white;
-    }
-    .period-new {
-        fill: $period-new;
-    }
-    .period-selected {
-        fill: $period-selected;
-    }
+
     .button-small {
         font-size: 0.6em;
         width: 3.2em;
@@ -52,4 +31,57 @@
     .day-buttons {
         display: inline-block;
     }
+
+    $bar-margin-top: 12px;
+    $bar-height: 30px;
+    .day-bar-wrapper {
+        position: relative;
+        width: 100%;
+        height: $bar-height + 20px;
+        // background-color: blue;
+        .hour-text {
+            position: absolute;
+            font-size: 0.6em;
+            color: #d0d0d0;
+        }
+        .day-bar {
+            position: absolute;
+            // width: calc(100% - 20px);
+            left: 10px;
+            right: 10px;
+            top: $bar-margin-top;
+            height: $bar-height;
+            background-color: white;
+        }
+        .hour-line {
+            position: absolute;
+            background-color: darkgray;
+            width: 1px;
+            height: $bar-height;
+            top: $bar-margin-top;
+        }
+        .period {
+            position: absolute;
+            top: $bar-margin-top;
+            height: $bar-height;
+            background-color: $day-period-fill;
+            opacity: 0.4;
+        }
+        .period-new {
+            background-color: $period-new;
+        }
+        .period-selected {
+            background-color: $period-selected;
+        }
+        .period-select-handle {
+            position: absolute;
+            top: ($bar-margin-top + 1);
+            width: ($bar-height - 2);
+            height: ($bar-height - 2);
+            margin-left: -($bar-height - 2) / 2;
+            border-radius: ($bar-height - 2) / 2;
+            background-color: $day-period-fill;
+        }            
+    }
 }
+

@@ -155,7 +155,8 @@ export class DayTimerComponent implements OnInit {
       LoggerService.log('onTapPeriod');
         if (this.selectedPeriod === period) {
             this.selectedPeriod = null;
-            if (period.id > 0) { this.commitPeriodUpdate(period); } // don't save new periods here - wait for tick press
+            this.commitPeriodUpdate(period);
+            // if (period.id > 0) { this.commitPeriodUpdate(period); } // don't save new periods here - wait for tick press
         } else {
             this.selectedPeriod = period;
         }
@@ -188,6 +189,7 @@ export class DayTimerComponent implements OnInit {
     };
 
     public onDragPeriod = function($event: any, period: any) {
+        $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
                 this.setDragPeriod(period);
@@ -204,6 +206,7 @@ export class DayTimerComponent implements OnInit {
     };
 
     public onDragTimeStart = function($event: any, period: any) {
+        $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
                 this.setDragPeriod(period);
@@ -221,6 +224,7 @@ export class DayTimerComponent implements OnInit {
     };
 
     public onDragTimeEnd = function($event: any, period: any) {
+        $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
                 this.setDragPeriod(period);
