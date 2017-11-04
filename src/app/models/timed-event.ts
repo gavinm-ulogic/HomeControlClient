@@ -7,5 +7,6 @@ export class TimedEvent {
     timeEndStr: string;
     timeStart: Date;
     timeStartStr: string;
-    type: number;
+    action: string;
 }
+

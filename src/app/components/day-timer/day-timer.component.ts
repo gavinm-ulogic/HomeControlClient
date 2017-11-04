@@ -1,6 +1,7 @@
-import { Component, Input, ElementRef, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, OnInit, OnChanges } from '@angular/core';
 import { LoggerService } from '../../services/logger.service';
 import { HeatingService } from '../../services/heating.service';
+import { TimedEvent } from '../../models/timed-event';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -9,10 +10,12 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./day-timer.component.scss']
 })
 export class DayTimerComponent implements OnInit {
-    @Input() periods: any[];
+    @Input() events: any[];
     @Input() editable: boolean;
     @Input() newEvent: boolean;
     @Input() dayFilter: number;
+    @Input() selectedEvent: TimedEvent;
+    @Output() onEventSelected = new EventEmitter<TimedEvent>();
 
     public dragPeriod: any = null;
     public dayStart: Date;
@@ -22,7 +25,7 @@ export class DayTimerComponent implements OnInit {
     public ctrlWidth = 320;
     public barWidth = 320;
     public barLeft = 10;
-    public selectedPeriod: any = null;
+    // public selectedPeriod: any = null;
     public dayArray: any[];
     public repeating: boolean;
     public showCommit: boolean = false;
@@ -35,10 +38,6 @@ export class DayTimerComponent implements OnInit {
     ) {}
 
     private init() {
-      // this.ctrlWidth = this.elementRef.nativeElement.offsetParent.offsetWidth;
-        // this.ctrlWidth = this.elementRef.nativeElement.parentElement.clientWidth;
-        // this.barWidth = this.ctrlWidth - 20;
-        // this.barLeft = 10;
         this.handleResize(null);
       
         this.repeating = this.dayFilter > 0 && this.dayFilter < 1000;
@@ -53,11 +52,11 @@ export class DayTimerComponent implements OnInit {
         /* tslint:enable:no-bitwise */
 
         if (this.newEvent) {
-            this.periods[0].id = 0;
-            this.periods[0].timeStart = new Date();
-            this.periods[0].timeStart.setHours(12, 0, 0, 0);
-            this.periods[0].timeEnd = new Date();
-            this.periods[0].timeEnd.setHours(14, 0, 0, 0);
+            this.events[0].id = 0;
+            this.events[0].timeStart = new Date();
+            this.events[0].timeStart.setHours(12, 0, 0, 0);
+            this.events[0].timeEnd = new Date();
+            this.events[0].timeEnd.setHours(14, 0, 0, 0);
 
             this.showCommit = true;
             this.dayLabel = 'new';
@@ -86,11 +85,17 @@ export class DayTimerComponent implements OnInit {
                     }
             }
         }
+
+        // for (let te of this.periods) {
+        //     if (te.id === 0) {
+        //         this.selectedPeriod = te;
+        //         break;
+        //     }
+        // }
     };
 
     ngOnInit() {
       // LoggerService.log('DayTimer');
-      // this.init();
     }
 
     ngOnChanges(changes) {
@@ -155,10 +160,12 @@ export class DayTimerComponent implements OnInit {
       LoggerService.log('onTapPeriod');
         if (this.selectedPeriod === period) {
             this.selectedPeriod = null;
+            this.onEventSelected.emit(this.selectedPeriod);
             this.commitPeriodUpdate(period);
             // if (period.id > 0) { this.commitPeriodUpdate(period); } // don't save new periods here - wait for tick press
         } else {
             this.selectedPeriod = period;
+            this.onEventSelected.emit(this.selectedPeriod);
         }
     };
 
@@ -173,16 +180,12 @@ export class DayTimerComponent implements OnInit {
                         period = {};
                         self.selectedPeriod = null;
                     });
-
-
-                // this.heatingService.deleteEvent(period.id).then(function(){
-                //     period = {};
-                // });
             } else {
                 period = {};
                 this.selectedPeriod = null;
             }
             LoggerService.log('DayTimer.periodDeleteIfEmpty period deleted');
+            this.onEventSelected.emit(null);
             return true;
         }
         return false;
@@ -255,25 +258,25 @@ export class DayTimerComponent implements OnInit {
             });
     };
 
-    public addNewEvent = function() {
-        LoggerService.log('DayTimer addNewEvent');
-        let timeStart = new Date();
-        let timeEnd = new Date();
-        timeStart.setHours(12, 0, 0, 0);
-        timeEnd.setHours(14, 0, 0, 0);
+    // public addNewEvent = function() {
+    //     LoggerService.log('DayTimer addNewEvent');
+    //     let timeStart = new Date();
+    //     let timeEnd = new Date();
+    //     timeStart.setHours(12, 0, 0, 0);
+    //     timeEnd.setHours(14, 0, 0, 0);
 
-        for (let i = 0; i < this.periods.length; i++) {
-            if (this.isValidPeriod(this.periods[i])) {
-                LoggerService.log('DayTimer addNewEvent found match event');
-                let matchStart = new Date(this.periods[i].timeStart);
-                timeStart.setFullYear(matchStart.getFullYear());
-                timeEnd.setFullYear(matchStart.getFullYear());
-                this.periods.push({id: 0, subjectId: this.periods[i].subjectId, isGroup: this.periods[i].isGroup, timeStart: timeStart, timeEnd: timeEnd});
-                this.showCommit = true;
-                break;
-            }
-        }
-    };
+    //     for (let i = 0; i < this.periods.length; i++) {
+    //         if (this.isValidPeriod(this.periods[i])) {
+    //             LoggerService.log('DayTimer addNewEvent found match event');
+    //             let matchStart = new Date(this.periods[i].timeStart);
+    //             timeStart.setFullYear(matchStart.getFullYear());
+    //             timeEnd.setFullYear(matchStart.getFullYear());
+    //             this.periods.push({id: 0, subjectId: this.periods[i].subjectId, isGroup: this.periods[i].isGroup, timeStart: timeStart, timeEnd: timeEnd});
+    //             this.showCommit = true;
+    //             break;
+    //         }
+    //     }
+    // };
 
     public handleCommit = function() {
         for (let i = 0; i < this.periods.length; i++) {

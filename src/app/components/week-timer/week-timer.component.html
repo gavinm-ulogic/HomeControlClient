@@ -19,14 +19,14 @@
                 </g>
             </svg>
         </div>
-        <div *ngIf="newEvent=='subjectEvents'">
+        <!-- <div *ngIf="newEvents">
                 <div class="app-day-timer-content">
-                <app-day-timer [periods]="[{subjectId: subject.id, isGroup: false}]" [newEvent]="true" [dayFilter]="newEventFilter"></app-day-timer>
+                <app-day-timer [events]="newPeriods" [newEvent]="true" [dayFilter]="newEventFilter"></app-day-timer>
             </div>
-        </div>
+        </div> -->
         <div *ngFor="let dayFilter of subjectDayList">
             <div>
-                <div class="app-day-timer-content"><app-day-timer [periods]="subjectEvents" [dayFilter]="dayFilter"></app-day-timer></div>
+                <div class="app-day-timer-content"><app-day-timer [events]="subjectEvents" [dayFilter]="dayFilter" [selectedEvent]="selectedEvent" (onEventSelected)="handleEventSelected($event)"></app-day-timer></div>
             </div>
         </div>
     </div>
