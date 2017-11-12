@@ -6,6 +6,7 @@
         <app-room-detail [room]="currentRoom">
         </app-room-detail>
         <!-- <div *ngIf="viewMode=='single'" class="nav-back" (click)="handleBack()"><span class="glyphicon glyphicon-chevron-left"></span></div> -->
+        <div *ngIf="viewMode=='single'" class="nav-back"><img src="assets/left-arrow.svg" height="40" (click)="handleBack()"></div>        
       </div>
 </div>
 

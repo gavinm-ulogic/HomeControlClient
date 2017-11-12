@@ -51,4 +51,9 @@ export class AppComponent implements OnInit {
     this.viewState = 'detail';
     this.refreshState();
   }
+
+  handleBack() {
+    this.viewState = 'list';
+    this.refreshState();
+  }  
 }

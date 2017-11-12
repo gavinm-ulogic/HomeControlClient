@@ -248,7 +248,6 @@ export class DayTimerComponent implements OnInit {
         if (formatted.indexOf(' ') === 6) { formatted = '00' + formatted; } period.timeStartStr = formatted;
         formatted = this.datePipe.transform(period.timeEnd, 'yyyyMMdd HH:mm:ss');
         if (formatted.indexOf(' ') === 6) { formatted = '00' + formatted; } period.timeEndStr = formatted;
-        period.type = 1;
         this.heatingService.saveEvent(period)
             .subscribe( (res: any) => {
                 period.id = res.id;

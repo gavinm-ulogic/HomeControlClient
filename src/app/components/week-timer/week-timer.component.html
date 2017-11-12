@@ -19,9 +19,9 @@
                 </g>
             </svg>
         </div>
-        <div *ngIf="newEvent=='subjectEvents'">
+        <div *ngIf="newEvent">
                 <div class="app-day-timer-content">
-                <app-day-timer [periods]="[{subjectId: subject.id, isGroup: false}]" [newEvent]="true" [dayFilter]="newEventFilter"></app-day-timer>
+                <app-day-timer [periods]="newEvent" [newEvent]="true" [dayFilter]="newEventFilter"></app-day-timer>
             </div>
         </div>
         <div *ngFor="let dayFilter of subjectDayList">

@@ -71,13 +71,24 @@ export class WeekTimerComponent implements OnInit {
     ngOnChanges() {
         LoggerService.log('WeekTimer OnChanges');
         if (this.subject) {
-            this.getEventSet(this.subject.id, false, this.subjectEvents, this.subjectDayList);
+            this.init();
         }
         this.newEvent = '';
     }
 
-    public addNewEvent = function(region: string, filter: number) {
-        this.newEventFilter = filter;
-        this.newEvent = region;
+    private init() {
+        this.subjectEvents = [];
+        this.subjectDayList = [];
+        this.getEventSet(this.subject.id, false, this.subjectEvents, this.subjectDayList);
+    }
+
+    public addNewEvent = function(filter: number) {
+        this.newEvent = new TimedEvent();
+        this.newEvent.subjectId = this.subject.id;
+        this.newEvent.subjectType = 'heater';
+        this.newEvent.action = 'target';
+        this.newEvent.timeStart = new Date();
+        this.newEvent.TimedEvent = null;
+
     };
 }
