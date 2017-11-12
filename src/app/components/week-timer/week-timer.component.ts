@@ -19,17 +19,18 @@ export class WeekTimerComponent implements OnInit {
     public parentDayList: number[] = [];
 
     public subjectEvents: TimedEvent[] = [];
-    public subjectGroupEvents: TimedEvent[] = [];
-    public parentEvents: TimedEvent[] = [];
+    public newEvents: TimedEvent[];
 
-    public newEvent: string = '';
+    public selectedEvent = null;
+    
+    // public newEvent: string = '';
     public newEventFilter = 0;
 
     constructor(
         public heatingService: HeatingService
     ) {}
 
-    private getOneDayList = function(eventList: any[]) {
+    private setOneDayList = function(eventList: any[]) {
         if (!eventList) { return null; }
         let newList: number[] = null;
         for (let i = 0; i < eventList.length; i++) {
@@ -57,7 +58,7 @@ export class WeekTimerComponent implements OnInit {
             .subscribe(
                 (events: TimedEvent[]) => {
                     eventSet.push.apply(eventSet, events);
-                    dayList.push.apply(dayList, this.getOneDayList(eventSet));
+                    dayList.push.apply(dayList, this.setOneDayList(eventSet));
                 },
                 (err: any) => {
                     LoggerService.log(err);
@@ -70,10 +71,7 @@ export class WeekTimerComponent implements OnInit {
 
     ngOnChanges() {
         LoggerService.log('WeekTimer OnChanges');
-        if (this.subject) {
-            this.init();
-        }
-        this.newEvent = '';
+        this.init();
     }
 
     private init() {
@@ -82,13 +80,27 @@ export class WeekTimerComponent implements OnInit {
         this.getEventSet(this.subject.id, false, this.subjectEvents, this.subjectDayList);
     }
 
-    public addNewEvent = function(filter: number) {
-        this.newEvent = new TimedEvent();
-        this.newEvent.subjectId = this.subject.id;
-        this.newEvent.subjectType = 'heater';
-        this.newEvent.action = 'target';
-        this.newEvent.timeStart = new Date();
-        this.newEvent.TimedEvent = null;
-
+    public addNewEvent = function(region: string, filter: number) {
+        if (!this.newEvents) { this.newEvents == []; }
+        this.newEventFilter = filter;
+        let ne = new TimedEvent();
+        ne.id = 0;
+        ne.subjectType = 'heater';
+        ne.subjectId = this.subject.id;
+        ne.timeStart = new Date();
+        if (ne.timeStart.getHours() > 20) {
+            ne.timeStart.setHours(20);
+        }
+        if (filter !== null) { ne.timeStart.setFullYear(filter); }
+        ne.timeEnd = new Date(ne.timeStart);
+        ne.timeEnd.setHours(ne.timeStart.getHours() + 3);
+        ne.action = 'timed';
+        this.subjectEvents.push(ne);
+        this.setOneDayList(this.subjectEvents);
+        this.selectedEvent = ne;
     };
+
+    public handleEventSelected($event) {
+        this.selectedEvent = $event;
+    }
 }

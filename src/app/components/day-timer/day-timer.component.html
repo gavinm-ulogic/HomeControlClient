@@ -1,8 +1,9 @@
 <div class="day-timer" (window:resize)="handleResize($event)">
     <div class="day-label">{{dayLabel}}</div>
-    <div *ngIf="newEvent" class="day-buttons">
+    <div *ngIf="isValidPeriod(selectedEvent)" class="day-buttons">
         <span>repeating</span> <input type="checkbox" [(ngModel)]="repeating">
-        <button *ngFor="let day of dayArray" [disabled]="!repeating" (click)="day.selected=!day.selected" class="button-small" [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}">{{day.name}}</button>
+        <button *ngFor="let day of dayArray" [disabled]="!repeating" (click)="day.selected=!day.selected" class="button-small" 
+            [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}">{{day.name}}</button>
     </div>
     <!-- <div class="action-icon" (click)="addNewEvent()"><span class="glyphicon glyphicon-plus"></span></div> -->
     <div *ngIf="showCommit" class="action-icon" (click)="handleCommit()"><span class="glyphicon glyphicon-ok"></span></div>
@@ -12,21 +13,23 @@
             <div class="hour-text" [ngStyle]="{'left': barLeft + idx * (barWidth)/24 + 'px'}">{{hour}}</div>
             <div *ngIf="hour > 0" class="hour-line" [ngStyle]="{'left': barLeft + idx * (barWidth)/24 + 'px'}"></div>
         </ng-container>
-        <ng-container *ngFor="let period of periods">
-            <div *ngIf="isValidPeriod(period)" 
-                class="period" [ngClass]="{'period-selected' : period == selectedPeriod, 'period-new': period.id <= 0}"
-                [ngStyle]="{'left': getPeriodStartX(period) + 'px', 'width': getPeriodWidth(period) + 'px'}"
-                (tap)="onTapPeriod($event, period)"
-                (panstart)="onDragPeriod($event, period)" (pan)="onDragPeriod($event, period)" (panend)="onDragPeriod($event, period)"     
-                ></div>
-            <div *ngIf="period == selectedPeriod" class="period-select-handle" 
-                [ngStyle]="{'left': getPeriodStartX(period) + 'px'}"
-                (panstart)="onDragTimeStart($event, period)" (pan)="onDragTimeStart($event, period)" (panend)="onDragTimeStart($event, period)"
-                ></div>
-            <div *ngIf="period == selectedPeriod" class="period-select-handle" 
-                [ngStyle]="{'left': getPeriodEndX(period) + 'px'}"
-                (panstart)="onDragTimeEnd($event, period)" (pan)="onDragTimeEnd($event, period)" (panend)="onDragTimeEnd($event, period)"
-                ></div>
+        <ng-container *ngFor="let period of events">
+            <ng-container *ngIf="isValidPeriod(period)">
+                <div 
+                    class="period" [ngClass]="{'period-selected' : period == selectedEvent, 'period-new': period.id <= 0}"
+                    [ngStyle]="{'left': getPeriodStartX(period) + 'px', 'width': getPeriodWidth(period) + 'px'}"
+                    (tap)="onTapPeriod($event, period)"
+                    (panstart)="onDragPeriod($event, period)" (pan)="onDragPeriod($event, period)" (panend)="onDragPeriod($event, period)"     
+                    ></div>
+                <div *ngIf="period == selectedEvent" class="period-select-handle" 
+                    [ngStyle]="{'left': getPeriodStartX(period) + 'px'}"
+                    (panstart)="onDragTimeStart($event, period)" (pan)="onDragTimeStart($event, period)" (panend)="onDragTimeStart($event, period)"
+                    ></div>
+                <div *ngIf="period == selectedEvent" class="period-select-handle" 
+                    [ngStyle]="{'left': getPeriodEndX(period) + 'px'}"
+                    (panstart)="onDragTimeEnd($event, period)" (pan)="onDragTimeEnd($event, period)" (panend)="onDragTimeEnd($event, period)"
+                    ></div>
+            </ng-container>
         </ng-container>
     </div>
 </div>

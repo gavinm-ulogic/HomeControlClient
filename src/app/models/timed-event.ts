@@ -3,9 +3,11 @@ export class TimedEvent {
     id: number;
     isGroup: boolean;
     subjectId: number;
+    subjectType: string;
     timeEnd: Date;
     timeEndStr: string;
     timeStart: Date;
     timeStartStr: string;
-    type: number;
+    action: string;
 }
+
