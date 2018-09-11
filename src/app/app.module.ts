@@ -11,6 +11,9 @@ import { RoomDetailComponent } from './components/room-detail/room-detail.compon
 import { HeatingService } from './services/heating.service';
 import { DayTimerComponent } from './components/day-timer/day-timer.component';
 import { WeekTimerComponent } from './components/week-timer/week-timer.component';
+import { StatusComponent } from './components/status/status.component';
+import { SensorListComponent } from './components/sensor-list/sensor-list.component';
+import { LiveEventsComponent } from './components/live-events/live-events.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,10 @@ import { WeekTimerComponent } from './components/week-timer/week-timer.component
     RoomListComponent,
     RoomDetailComponent,
     DayTimerComponent,
-    WeekTimerComponent
+    WeekTimerComponent,
+    StatusComponent,
+    SensorListComponent,
+    LiveEventsComponent
   ],
   imports: [
     BrowserModule,

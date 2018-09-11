@@ -1,0 +1,33 @@
+.events {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.active {
+    margin: 20px 0 12px 12px;
+    background-color: #202020;
+    padding: 0 0 10px 0;
+}
+
+.upcomming {
+    margin: 20px 0 0 12px;
+    background-color: #202020;
+    padding: 0 0 10px 0;
+}
+
+.block-title {
+    position: relative;
+    top: -0.5em;
+    left: 20px;
+    font-weight: bold;
+    font-size: 1em;
+    color: white;
+}
+
+.sensors {
+    display: inline-block;
+    vertical-align: top;
+    background-color: #202020;
+    margin: 20px 12px;
+    padding: 0 0 10px 0;
+}

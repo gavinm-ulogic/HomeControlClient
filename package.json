@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --environment dev",
+    "build": "ng build --environment prod --prod --aot --base-href /HomeControl/Client",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

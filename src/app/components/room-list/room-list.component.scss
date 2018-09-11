@@ -11,6 +11,16 @@
     width:100%;
     cursor: pointer;
 }
+.status {
+    display: table-cell;
+    opacity: 0.8;
+    color: black;
+    text-align: center;
+    width: 2.6em;
+    height: 2.6em;
+    vertical-align: middle;
+    cursor: pointer;
+}
 .temperature {
     display: table-cell;
     opacity: 0.8;

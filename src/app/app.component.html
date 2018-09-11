@@ -3,9 +3,10 @@
         <app-room-list (onRoomSelected)="handleRoomSelected($event)">
         </app-room-list>
       </div><div *ngIf="showDetail" class="right-side">
-        <app-room-detail [room]="currentRoom">
+        <app-room-detail *ngIf="currentRoom" [room]="currentRoom">
         </app-room-detail>
-        <!-- <div *ngIf="viewMode=='single'" class="nav-back" (click)="handleBack()"><span class="glyphicon glyphicon-chevron-left"></span></div> -->
+        <app-status *ngIf="!currentRoom">
+        </app-status>
         <div *ngIf="viewMode=='single'" class="nav-back"><img src="assets/left-arrow.svg" height="40" (click)="handleBack()"></div>        
       </div>
 </div>

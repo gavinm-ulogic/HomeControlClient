@@ -1,3 +1,6 @@
+<div  class="list-item" (click)="onSelectStatus()">
+    <div class="temperature"></div><div class="list-text">Status</div>
+</div>
 <div *ngFor="let room of roomList" class="list-item" (click)="onSelect(room)">
   <div class="temperature {{room.getTempClass()}}">{{room.summary}}</div><div class="list-text">{{room.name}}</div>
 </div>

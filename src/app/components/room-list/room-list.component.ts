@@ -43,4 +43,8 @@ export class RoomListComponent implements OnInit {
         LoggerService.log('RoomList, Room selected: ' + room.name);
         this.onRoomSelected.emit(room);
     };
+
+    public onSelectStatus = function() {
+        this.onRoomSelected.emit(null);
+    }
 }

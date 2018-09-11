@@ -1,0 +1,27 @@
+<div *ngIf="events && events.length > 0" class="table">
+  <div class="row">
+    <div class="cell, header">
+      Description
+    </div>
+    <div class="cell">
+      Heater
+    </div>
+    <div *ngIf="showState" class="cell">
+      State
+    </div>
+  </div>
+  <div *ngFor="let event of events" class="row">
+    <div class="cell">
+      {{event.timedEvent.description}}
+    </div>
+    <div class="cell">
+      {{event.heater.name}}
+    </div>
+    <div *ngIf="showState" class="cell" [ngClass]="{'state-on':event.relay.state}">
+      {{event.relay.state ? 'on' : 'off'}}
+    </div>
+  </div>
+</div>
+<div *ngIf="events?.length === 0" class="empty-list">
+  There are no events to show
+</div>

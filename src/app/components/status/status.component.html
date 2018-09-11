@@ -1,0 +1,13 @@
+<div class="events">
+  <div class="active">
+    <div class="block-title">Active events</div>
+    <app-live-events [events]="status?.liveEvents" [showState]="true"></app-live-events>
+  </div>
+  <div class="upcomming ">
+    <div class="block-title">Upcomming events</div>
+    <app-live-events [events]="status?.soonEvents"></app-live-events>
+  </div>
+</div><div class="sensors">
+  <div class="block-title">Sensors</div>
+  <app-sensor-list [sensors]="status?.sensors"></app-sensor-list>
+</div>

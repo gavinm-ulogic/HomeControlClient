@@ -1,0 +1,30 @@
+<div *ngIf="sensors" class="table">
+  <div class="row">
+    <div class="cell, header">
+      Sensor name
+    </div>
+    <div class="cell">
+      Reading
+    </div>
+    <div class="cell">
+      Last read
+    </div>
+    <div class="cell">
+      Last changed
+    </div>
+  </div>
+  <div *ngFor="let sensor of sensors" class="row">
+    <div class="cell">
+      {{sensor.name}}
+    </div>
+    <div class="cell">
+      {{sensor.reading}}
+    </div>
+    <div class="cell">
+      {{sensor.lastReadStr}}
+    </div>
+    <div class="cell">
+      {{sensor.lastChangeStr}}
+    </div>
+  </div>
+</div>
