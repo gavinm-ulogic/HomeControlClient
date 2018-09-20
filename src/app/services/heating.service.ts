@@ -5,6 +5,8 @@ import { Environment } from '../app.environment';
 
 import { Status } from '../models/status';
 import { Room } from '../models/room';
+import { Sensor } from '../models/sensor';
+import { Heater } from '../models/heater';
 import { TimedEvent } from '../models/timed-event';
 
 import { Injectable } from '@angular/core';
@@ -214,6 +216,18 @@ export class HeatingService {
 
   public getRoom = function (roomId: number, noChache: boolean) {
     return this.getObject(this.getRooms, this.theRooms, roomId, noChache);
+  };
+
+  public saveRoom = function (room: Room) {
+    return this.saveObject(room, 'Rooms');
+  };
+
+  public saveSensor = function (sensor: Sensor) {
+    return this.saveObject(sensor, 'Sensors');
+  };
+
+  public saveHeater = function (heater: Heater) {
+    return this.saveObject(heater, 'Heaters');
   };
 
   public getEvent = function (eventId: number, noChache: boolean) {

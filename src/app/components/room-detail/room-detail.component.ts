@@ -15,6 +15,7 @@ export class RoomDetailComponent implements OnInit, OnChanges {
 
   public roomEvents: TimedEvent[] = null;
   public showEvents: boolean = false;
+  public editMode = true;
   
   constructor(
     public heatingService: HeatingService
@@ -30,4 +31,16 @@ export class RoomDetailComponent implements OnInit, OnChanges {
         this.showEvents = this.room.heaters.length > 0;
     }
   } 
+
+  editRoomBlur() {
+    this.heatingService.saveRoom(this.room).subscribe();
+  }
+
+  editSensorBlur(sensor) {
+    this.heatingService.saveSensor(sensor).subscribe();
+  }
+
+  editHeaterBlur(heater) {
+    this.heatingService.saveHeater(heater).subscribe();
+  }
 }
