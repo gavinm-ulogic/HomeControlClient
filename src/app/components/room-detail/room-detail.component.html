@@ -1,6 +1,6 @@
 <div class="right-view room-detail">
     <div *ngIf="room">
-        <input [(ngModel)]="room.name" (blur)="editRoomBlur()" [disabled]="!editMode"  class="title1"/>
+        <input [(ngModel)]="room.name" (blur)="editRoomBlur()" [disabled]="!editMode"  class="title1 room-title"/>
         <div class="info-pair">Current temp: <span class="">{{room.tempCurrent}}</span>°C</div>
         <div class="info-pair">Target temp: {{room.tempTarget}}°C</div>
         <div class="info-pair">Min temp: {{room.tempMin}}°C</div>
