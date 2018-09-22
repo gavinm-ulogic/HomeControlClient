@@ -1,5 +1,7 @@
-import { Observable, Subscriber } from 'rxjs/Rx';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Observable, throwError, Subscriber } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+// import { Http, Response, Headers, RequestOptions, HttpErrorResponse } from '@angular/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { Environment } from '../app.environment';
 
@@ -17,7 +19,7 @@ export class HeatingService {
   public theRooms: Room[] = [];
   public theEvents: TimedEvent[] = [];
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     LoggerService.log('HeatingService');
   }
 
@@ -26,61 +28,77 @@ export class HeatingService {
     // return self.refreshAllData();
   };
 
-  private handleError(error: Response | any): Observable<any> {
-
-    let errMsg: string;
-    if (error instanceof Response) {
-      let body: any;
-      try {
-        body = error.json() || '';
-      } catch (newErr) {
-        body = error.statusText;
-      }
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`);
     }
-    LoggerService.error(errMsg);
-    return Observable.throw(errMsg);
-  }
+    // return an observable with a user-facing error message
+    return throwError(
+      'Something bad happened; please try again later.');
+  };
 
-  private getStatusFromServer(dataProcessor: Function): Observable<Status> {
+  // private handleError(error: Response | any): Observable<any> {
+
+  //   let errMsg: string;
+  //   if (error instanceof Response) {
+  //     let body: any;
+  //     try {
+  //       body = error || '';
+  //     } catch (newErr) {
+  //       body = error.statusText;
+  //     }
+  //     const err = body.error || JSON.stringify(body);
+  //     errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+  //   } else {
+  //     errMsg = error.message ? error.message : error.toString();
+  //   }
+  //   LoggerService.error(errMsg);
+  //   return Observable.throw(errMsg);
+  // }
+
+  private getStatusFromServer(dataProcessor: Function) {
     let self = this;
-    return self.http.get(Environment.API_BASE + 'status')
-      .map((res: Response) => {
-        let status = res.json();
+    return self.http.get(Environment.API_BASE + 'status').pipe(
+      map((res: Response) => {
+        let status = res;
         if (dataProcessor) { dataProcessor.call(self, status); }
-        return status || {};
-      })
-      .catch(error => self.handleError(error));
+        return status || {}
+      }))
+      // .catch(error => self.handleError(error));
   };
 
   private getObjectListFromServer(objectList: any[], url: string, dataProcessor: Function = null) {
     let self = this;
-    return self.http.get(Environment.API_BASE + url)
-      .map((res: Response) => {
-        let theList = res.json();
+    return self.http.get(Environment.API_BASE + url).pipe(
+      map((res: Response) => {
+        let theList = res;
         objectList.length = 0;
         objectList.push.apply(objectList, theList);
         if (dataProcessor) { dataProcessor.call(self, objectList); }
         return objectList || {};
-      })
-      .catch(error => self.handleError(error));
+      }))
+      // .catch(error => self.handleError(error));
   };
 
   private getRoomListFromServer(roomList: Room[], dataProcessor: Function = null): Observable<Room[]> {
     let self = this;
-    return self.http.get(Environment.API_BASE + 'rooms')
-      .map((res: Response) => {
-        let theList = res.json();
+    return self.http.get(Environment.API_BASE + 'rooms').pipe(
+      map((res: Response) => {
+        let theList = res;
         roomList = Room.mapMany(theList);
         // roomList.length = 0;
         // roomList.push.apply(roomList, theList);
         if (dataProcessor) { dataProcessor.call(self, roomList); }
         return roomList || [];
-      })
-      .catch(error => self.handleError(error));
+      }))
+      // .catch(error => self.handleError(error));
   };
 
   private processRoomData(roomList: Room[]): Room[] {
@@ -145,7 +163,7 @@ export class HeatingService {
   }
 
   public getStatus(): Observable<Status> {
-    return this.getStatusFromServer(this.processStatusData);
+    return <Observable<Status>>this.getStatusFromServer(this.processStatusData);
   };
 
   public getRooms(): Observable<Room[]> {
@@ -153,7 +171,7 @@ export class HeatingService {
   };
 
   public getEvents(): Observable<Room[]> {
-    return this.getObjectListFromServer(this.theEvents, 'events');
+    return <Observable<Room[]>>this.getObjectListFromServer(this.theEvents, 'events');
   };
 
 
@@ -175,11 +193,10 @@ export class HeatingService {
       });
       return retOb;
     } else {
-      return this.getEvents()
-        .map((res: Response) => {
+      return this.getEvents().pipe(
+        map((res: Response) => {
           return this.filterSubjectEvents(subjectId);
-        })
-        .catch(this.handleError);
+        }))
     }
   };
 
@@ -219,15 +236,15 @@ export class HeatingService {
   };
 
   public saveRoom = function (room: Room) {
-    return this.saveObject(room, 'Rooms');
+    return this.saveObject(room, 'rooms');
   };
 
   public saveSensor = function (sensor: Sensor) {
-    return this.saveObject(sensor, 'Sensors');
+    return this.saveObject(sensor, 'sensors');
   };
 
   public saveHeater = function (heater: Heater) {
-    return this.saveObject(heater, 'Heaters');
+    return this.saveObject(heater, 'heaters');
   };
 
   public getEvent = function (eventId: number, noChache: boolean) {
@@ -238,34 +255,46 @@ export class HeatingService {
     if (!object) { return null; }
     let self = this;
 
-    let headers = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
-    let options = new RequestOptions({ headers: headers }); // Create a request option
+    // let headers = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    // let options = new RequestOptions({ headers: headers }); // Create a request option
+    
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+
 
     if (object.id > 0) {
-      return self.http.put(Environment.API_BASE + url + '/' + object.id, object, options)
-        .map((res: Response) => {
-          object = res.json();
+      return self.http.put(Environment.API_BASE + url + '/' + object.id, object, httpOptions).pipe(
+        map((res: Response) => {
+          object = res;
           return object || {};
-        })
-        .catch(error => self.handleError(error));
+        }),
+        catchError(self.handleError))
+        // .catch(error => self.handleError(error));
     } else {
-      return this.http.post(Environment.API_BASE + url, object, options)
-        .map((res: Response) => {
-          object = res.json();
+      return this.http.post(Environment.API_BASE + url, object, httpOptions).pipe(
+        map((res: Response) => {
+          object = res;
           return object;
-        }, function (error: any) {
-          LoggerService.log(error);
-        });
+        }),
+        catchError(self.handleError))
+        // , function (error: any) {
+        //   LoggerService.log(error);
+        // });
     }
   };
 
   private deleteObject(objectId: number, url: string) {
     let self = this;
     if (!objectId) { return null; }
-    return this.http.delete(Environment.API_BASE + url + '/' + objectId)
-      .map((res: Response) => {
+    return this.http.delete(Environment.API_BASE + url + '/' + objectId).pipe(
+      map((res: Response) => {
         return;
-      }).catch(error => self.handleError(error));
+      }),
+      catchError(self.handleError))
+      // .catch(error => self.handleError(error));
   };
 
   public saveEvent = function (eventObj: any) {

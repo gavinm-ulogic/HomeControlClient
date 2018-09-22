@@ -1,6 +1,6 @@
 <div class="right-view room-detail">
     <div *ngIf="room">
-        <input [(ngModel)]="room.name" (blur)="editRoomBlur()" [disabled]="!editMode"  class="title1 room-title"/>
+        <input type="text" [(ngModel)]="room.name" (blur)="editRoomBlur()" [disabled]="!editMode" class="title1 room-title">
         <div class="info-pair">Current temp: <span class="">{{room.tempCurrent}}</span>°C</div>
         <div class="info-pair">Target temp: {{room.tempTarget}}°C</div>
         <div class="info-pair">Min temp: {{room.tempMin}}°C</div>
@@ -10,7 +10,7 @@
             <div class="title2">Sensors</div>
             <div *ngFor="let sensor of room.sensors" class="section3 temperature {{room.getTempClass(room)}}">
                 <div class="title3">
-                    <input [(ngModel)]="sensor.name" (blur)="editSensorBlur(sensor)" [disabled]="!editMode"  class="title3 sensor-title"/></div>
+                    <input type="text" [(ngModel)]="sensor.name" (blur)="editSensorBlur(sensor)" [disabled]="!editMode" class="title3 sensor-title"></div>
                 <div class="info-pair">Current temp: {{sensor.reading}}°C</div>
                 <div class="info-pair">Last read: {{sensor.lastRead | date: 'dd/MM/yyyy HH:mm'}}</div>
             </div>
@@ -20,7 +20,7 @@
             <div *ngIf="room.heaters.length==0" class="indent1">none</div>
             <div *ngFor="let heater of room.heaters" class="section3">
                 <div class="title3">
-                    <input [(ngModel)]="heater.name" (blur)="editHeaterBlur(heater)" [disabled]="!editMode"  class="title3 heater-title"/></div>
+                    <input type="text" [(ngModel)]="heater.name" (blur)="editHeaterBlur(heater)" [disabled]="!editMode" class="title3 heater-title"></div>
                 <div class="info-pair">State: {{heater.state ? 'on' : 'off'}}</div>
                 <div class="info-pair">Relay: {{heater.relayAddress}}</div>
                 <app-week-timer [subject]="heater" [parent]="room" [viewLevel]="4"></app-week-timer>
