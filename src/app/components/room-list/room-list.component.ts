@@ -14,7 +14,7 @@ export class RoomListComponent implements OnInit {
 
     public roomList: Room[];
 
-    private loadRoomList = function() {
+    private loadRoomList() {
         this.heatingService.getRooms()
             .subscribe(
                 (rooms: Room[]) => this.roomList = rooms,
@@ -33,18 +33,12 @@ export class RoomListComponent implements OnInit {
         this.loadRoomList();
     }
 
-    // public getTempClass = function(room: Room) {
-    //     if (room.tempCurrent === -999) { return ''; }
-    //     let iPos = Math.min(25, Math.max(4, Math.floor(room.tempCurrent)));
-    //     return 'temperature-' + iPos;
-    // };
-
-    public onSelect = function(room: Room) {
+    public onSelect(room: Room) {
         LoggerService.log('RoomList, Room selected: ' + room.name);
         this.onRoomSelected.emit(room);
     };
 
-    public onSelectStatus = function() {
+    public onSelectStatus() {
         this.onRoomSelected.emit(null);
     }
 }

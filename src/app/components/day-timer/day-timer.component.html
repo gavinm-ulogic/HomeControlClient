@@ -13,21 +13,21 @@
             <div class="hour-text" [ngStyle]="{'left': barLeft + idx * (barWidth)/24 + 'px'}">{{hour}}</div>
             <div *ngIf="hour > 0" class="hour-line" [ngStyle]="{'left': barLeft + idx * (barWidth)/24 + 'px'}"></div>
         </ng-container>
-        <ng-container *ngFor="let period of events">
-            <ng-container *ngIf="isValidPeriod(period)">
+        <ng-container *ngFor="let timedEvent of filteredEvents">
+            <ng-container *ngIf="isValidPeriod(timedEvent)">
                 <div 
-                    class="period" [ngClass]="{'period-selected' : period == selectedEvent, 'period-new': period.id <= 0}"
-                    [ngStyle]="{'left': getPeriodStartX(period) + 'px', 'width': getPeriodWidth(period) + 'px'}"
-                    (tap)="onTapPeriod($event, period)"
-                    (panstart)="onDragPeriod($event, period)" (pan)="onDragPeriod($event, period)" (panend)="onDragPeriod($event, period)"     
+                    class="period" [ngClass]="{'period-selected' : timedEvent == selectedEvent, 'timedEvent-new': timedEvent.id <= 0}"
+                    [ngStyle]="{'left': getPeriodStartX(timedEvent) + 'px', 'width': getPeriodWidth(timedEvent) + 'px'}"
+                    (tap)="onTapPeriod($event, timedEvent)"
+                    (panstart)="onDragPeriod($event, timedEvent)" (pan)="onDragPeriod($event, timedEvent)" (panend)="onDragPeriod($event, timedEvent)"     
                     ></div>
-                <div *ngIf="period == selectedEvent" class="period-select-handle" 
-                    [ngStyle]="{'left': getPeriodStartX(period) + 'px'}"
-                    (panstart)="onDragTimeStart($event, period)" (pan)="onDragTimeStart($event, period)" (panend)="onDragTimeStart($event, period)"
+                <div *ngIf="timedEvent == selectedEvent" class="period-select-handle" 
+                    [ngStyle]="{'left': getPeriodStartX(timedEvent) + 'px'}"
+                    (panstart)="onDragTimeStart($event, timedEvent)" (pan)="onDragTimeStart($event, timedEvent)" (panend)="onDragTimeStart($event, timedEvent)"
                     ></div>
-                <div *ngIf="period == selectedEvent" class="period-select-handle" 
-                    [ngStyle]="{'left': getPeriodEndX(period) + 'px'}"
-                    (panstart)="onDragTimeEnd($event, period)" (pan)="onDragTimeEnd($event, period)" (panend)="onDragTimeEnd($event, period)"
+                <div *ngIf="timedEvent == selectedEvent" class="period-select-handle" 
+                    [ngStyle]="{'left': getPeriodEndX(timedEvent) + 'px'}"
+                    (panstart)="onDragTimeEnd($event, timedEvent)" (pan)="onDragTimeEnd($event, timedEvent)" (panend)="onDragTimeEnd($event, timedEvent)"
                     ></div>
             </ng-container>
         </ng-container>

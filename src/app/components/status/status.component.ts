@@ -19,8 +19,7 @@ export class StatusComponent implements OnInit {
   ngOnInit() {
     let self = this;
     self.loadStatus();
-    self.timer = setInterval(
-      function(){
+    self.timer = setInterval(function(){
         self.loadStatus();
       }, self.REFRESHTIME
     )

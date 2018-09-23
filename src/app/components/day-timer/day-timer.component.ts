@@ -10,9 +10,8 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./day-timer.component.scss']
 })
 export class DayTimerComponent implements OnInit {
-    @Input() events: any[];
+    @Input() events: TimedEvent[];
     @Input() editable: boolean;
-    @Input() newEvent: boolean;
     @Input() dayFilter: number;
     @Input() selectedEvent: TimedEvent;
     @Output() onEventSelected = new EventEmitter<TimedEvent>();
@@ -25,11 +24,15 @@ export class DayTimerComponent implements OnInit {
     public ctrlWidth = 320;
     public barWidth = 320;
     public barLeft = 10;
+
+    public filteredEvents: TimedEvent[];
     // public selectedPeriod: any = null;
     public dayArray: any[];
     public repeating: boolean;
     public showCommit: boolean = false;
     public dayLabel: string = '';
+
+    public selectedPeriod: TimedEvent;
 
     constructor(
         private elementRef: ElementRef,
@@ -39,6 +42,8 @@ export class DayTimerComponent implements OnInit {
 
     private init() {
         this.handleResize(null);
+
+        this.filteredEvents = this.events.filter(e => e.timeStart.getFullYear() == this.dayFilter);
       
         this.repeating = this.dayFilter > 0 && this.dayFilter < 1000;
         /* tslint:disable:no-bitwise */
@@ -51,47 +56,29 @@ export class DayTimerComponent implements OnInit {
                                 {name: 'Sun', selected: this.repeating && this.dayFilter & 64}];
         /* tslint:enable:no-bitwise */
 
-        if (this.newEvent) {
-            this.events[0].id = 0;
-            this.events[0].timeStart = new Date();
-            this.events[0].timeStart.setHours(12, 0, 0, 0);
-            this.events[0].timeEnd = new Date();
-            this.events[0].timeEnd.setHours(14, 0, 0, 0);
-
-            this.showCommit = true;
-            this.dayLabel = 'new';
-        } else {
-            switch (this.dayFilter) {
-                case 31:
-                    this.dayLabel = 'week days';
-                    break;
-                case 96:
-                    this.dayLabel = 'weekend';
-                    break;
-                case 127:
-                    this.dayLabel = 'all week';
-                    break;
-                default:
-                    ///if ()
-                    this.dayLabel = '';
-                    if (this.dayFilter < 1000) {
-                        for (let i = 0; i < 7; i++) {
-                            if (this.dayArray[i].selected) {
-                                this.dayLabel += (this.dayLabel !== '') ? ', ' + this.dayArray[i].name : this.dayArray[i].name;
-                            }
+        switch (this.dayFilter) {
+            case 31:
+                this.dayLabel = 'week days';
+                break;
+            case 96:
+                this.dayLabel = 'weekend';
+                break;
+            case 127:
+                this.dayLabel = 'all week';
+                break;
+            default:
+                ///if ()
+                this.dayLabel = '';
+                if (this.dayFilter < 1000) {
+                    for (let i = 0; i < 7; i++) {
+                        if (this.dayArray[i].selected) {
+                            this.dayLabel += (this.dayLabel !== '') ? ', ' + this.dayArray[i].name : this.dayArray[i].name;
                         }
-                    } else {
-                        this.dayLabel = 'one time';
                     }
-            }
+                } else {
+                    this.dayLabel = 'one time';
+                }
         }
-
-        // for (let te of this.periods) {
-        //     if (te.id === 0) {
-        //         this.selectedPeriod = te;
-        //         break;
-        //     }
-        // }
     };
 
     ngOnInit() {
@@ -115,8 +102,7 @@ export class DayTimerComponent implements OnInit {
       }
     }
     
-    // private setDragPeriod = function(period: any) {
-    public setDragPeriod = function(period: any) {
+    public setDragPeriod(period: any) {
         this.dragPeriod = {};
         this.dragPeriod.timeStart = new Date(period.timeStart);
         this.dragPeriod.timeEnd = new Date(period.timeEnd);
@@ -127,49 +113,46 @@ export class DayTimerComponent implements OnInit {
         this.dayEnd.setHours(23, 59, 59, 999);
     };
 
-    // private convertPixelToMilliseconds = function(value: number) {
-    public convertPixelToMilliseconds = function(value: number) {
+    public convertPixelToMilliseconds(value: number) {
         return value * 3600000 / ((this.ctrlWidth - 20) / 24);
     };
 
-    public isValidPeriod(period: any) {
-        if (!period || !period.timeStart) { return false; }
-        let start: Date = new Date(period.timeStart);
-        if (!this.newEvent && this.dayFilter && start.getFullYear() !== this.dayFilter) { return false; }
+    public isValidPeriod(timedEvent: TimedEvent) {
+        if (!timedEvent || !timedEvent.timeStart || !this.filteredEvents.find(e => e === timedEvent)) { return false; }
+        // let start: Date = new Date(period.timeStart);
         return true;
     };
 
-    public getPeriodStartX = function(period: any) {
+    public getPeriodStartX(period: any) {
         let start: Date = new Date(period.timeStart);
         return (this.ctrlWidth - 20) / 24 * (start.getHours() + start.getMinutes() / 60) + 10;
     };
 
-    public getPeriodEndX = function(period: any) {
+    public getPeriodEndX(period: any) {
         let end: Date = new Date(period.timeEnd);
         return (this.ctrlWidth - 20) / 24 * (end.getHours() + end.getMinutes() / 60) + 10;
     };
 
-    public getPeriodWidth = function(period: any) {
+    public getPeriodWidth(period: any) {
         let start: Date = new Date(period.timeStart);
         let end: Date = new Date(period.timeEnd);
         let p: number = end.getTime() - start.getTime();
         return (p / 3600000) * (this.ctrlWidth - 20) / 24;
     };
 
-    public onTapPeriod = function ($event: any, period: any) {
+    public onTapPeriod($event: any, period: any) {
       LoggerService.log('onTapPeriod');
         if (this.selectedPeriod === period) {
             this.selectedPeriod = null;
             this.onEventSelected.emit(this.selectedPeriod);
             this.commitPeriodUpdate(period);
-            // if (period.id > 0) { this.commitPeriodUpdate(period); } // don't save new periods here - wait for tick press
         } else {
             this.selectedPeriod = period;
             this.onEventSelected.emit(this.selectedPeriod);
         }
     };
 
-    private periodDeleteIfEmpty = function(period: any) {
+    private periodDeleteIfEmpty(period: any) {
         let self = this;
         let testStart = new Date(period.timeStart);
         let testEnd = new Date(period.timeEnd);
@@ -191,7 +174,7 @@ export class DayTimerComponent implements OnInit {
         return false;
     };
 
-    public onDragPeriod = function($event: any, period: any) {
+    public onDragPeriod($event: any, period: any) {
         $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
@@ -203,12 +186,11 @@ export class DayTimerComponent implements OnInit {
                 break;
             case 'panend':
                 this.dragPeriod = null;
-                if (!this.newEvent) { this.commitPeriodUpdate(period); }
                 break;
         }
     };
 
-    public onDragTimeStart = function($event: any, period: any) {
+    public onDragTimeStart($event: any, period: any) {
         $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
@@ -226,7 +208,7 @@ export class DayTimerComponent implements OnInit {
         }
     };
 
-    public onDragTimeEnd = function($event: any, period: any) {
+    public onDragTimeEnd($event: any, period: any) {
         $event.preventDefault();        
         switch ($event.type) {
             case 'panstart':
@@ -244,7 +226,7 @@ export class DayTimerComponent implements OnInit {
         }
     };
 
-    public commitPeriodUpdate = function(period: any) {
+    public commitPeriodUpdate(period: any) {
         let self = this;
         let formatted: string;
         formatted = this.datePipe.transform(period.timeStart, 'yyyyMMdd HH:mm:ss');
@@ -256,53 +238,5 @@ export class DayTimerComponent implements OnInit {
                 period.id = res.id;
             });
     };
-
-    // public addNewEvent = function() {
-    //     LoggerService.log('DayTimer addNewEvent');
-    //     let timeStart = new Date();
-    //     let timeEnd = new Date();
-    //     timeStart.setHours(12, 0, 0, 0);
-    //     timeEnd.setHours(14, 0, 0, 0);
-
-    //     for (let i = 0; i < this.periods.length; i++) {
-    //         if (this.isValidPeriod(this.periods[i])) {
-    //             LoggerService.log('DayTimer addNewEvent found match event');
-    //             let matchStart = new Date(this.periods[i].timeStart);
-    //             timeStart.setFullYear(matchStart.getFullYear());
-    //             timeEnd.setFullYear(matchStart.getFullYear());
-    //             this.periods.push({id: 0, subjectId: this.periods[i].subjectId, isGroup: this.periods[i].isGroup, timeStart: timeStart, timeEnd: timeEnd});
-    //             this.showCommit = true;
-    //             break;
-    //         }
-    //     }
-    // };
-
-    public handleCommit = function() {
-        for (let i = 0; i < this.periods.length; i++) {
-            if (this.periods[i].id === 0) {
-                if (this.newEvent) {
-                    if (this.repeating) {
-                        let year = 0;
-                        for (let j = 0; j < 7; j++) {
-                            year = year + (this.dayArray[j].selected ? 1 : 0) * Math.pow(2, j);
-                        }
-                        if (year === 0) { return; }
-                        this.periods[i].timeStart.setFullYear(year, 0, 1);
-                        this.periods[i].timeEnd.setFullYear(year, 0, 1);
-                    } else {
-                        let now = new Date();
-                        this.periods[i].timeStart.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
-                        this.periods[i].timeEnd.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
-                    }
-
-                    let newStart: Date = new Date(this.periods[i].timeStart.getTime() - this.periods[i].timeStart.getTimezoneOffset() * 60000);
-                    let newEnd: Date = new Date(this.periods[i].timeEnd.getTime() - this.periods[i].timeEnd.getTimezoneOffset() * 60000);
-                    this.periods[i].timeStart = newStart;
-                    this.periods[i].timeEnd = newEnd;
-                }
-                this.periods[i].type = 1;
-                this.commitPeriodUpdate(this.periods[i]);
-            }
-        }
-    };
+    
 }

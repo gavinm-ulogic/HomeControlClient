@@ -117,6 +117,15 @@ export class HeatingService {
     return roomList;
   };
 
+  private processEventData(eventList: TimedEvent[]): TimedEvent[] {
+    if (!eventList) { return null; }
+    for (let timedEvent of eventList) {
+      timedEvent.timeStart = new Date(timedEvent.timeStart);
+      timedEvent.timeEnd = new Date(timedEvent.timeEnd);
+    }
+    return eventList;
+  };
+
   private processStatusData(status: Status): Status {
     function _ago(testDate: Date): string {
       let retVal = '';
@@ -127,19 +136,19 @@ export class HeatingService {
         let now = new Date();
         let diff = Math.round((now.getTime() - lrd.getTime()) / 1000);
         if (diff < 60) {
-          retVal = diff + ' seconds ago';
+          retVal = diff + ' sec';
         } else if (diff < 120) {
-          retVal = '1 minute ago';
+          retVal = '1 min';
         } else if (diff < 3600) {
-          retVal = Math.floor(diff / 60) + ' minutes ago';
+          retVal = Math.floor(diff / 60) + ' min';
         } else if (diff < 7200) {
-          retVal = '1 hour ago';
+          retVal = '1 hr';
         } else if (diff < 86400) {
-          retVal = Math.floor(diff / 3600) + ' hours ago';
+          retVal = Math.floor(diff / 3600) + ' hrs';
         } else if (diff < 172800) {
-          retVal = '1 day ago';
+          retVal = '1 day';
         } else {
-          retVal = Math.floor(diff / 86400) + ' days ago';
+          retVal = Math.floor(diff / 86400) + ' days';
         }
       }
       return retVal;
@@ -171,12 +180,12 @@ export class HeatingService {
   };
 
   public getEvents(): Observable<Room[]> {
-    return <Observable<Room[]>>this.getObjectListFromServer(this.theEvents, 'events');
+    return <Observable<Room[]>>this.getObjectListFromServer(this.theEvents, 'events', this.processEventData);
   };
 
 
-  private filterSubjectEvents = function (subjectId: number) {
-    let retArray: Event[] = [];
+  private filterSubjectEvents(subjectId: number) {
+    let retArray: TimedEvent[] = [];
     for (let event of this.theEvents) {
       if (event.subjectId === subjectId) {
         retArray.push(event);

@@ -30,7 +30,7 @@ export class WeekTimerComponent implements OnInit {
         public heatingService: HeatingService
     ) {}
 
-    private setOneDayList = function(eventList: any[]) {
+    private setOneDayList(eventList: any[]) {
         if (!eventList) { return null; }
         let newList: number[] = null;
         for (let i = 0; i < eventList.length; i++) {
@@ -52,8 +52,7 @@ export class WeekTimerComponent implements OnInit {
         return newList;
     };
 
-    private getEventSet = function(subjectId: number, isGroup: boolean, eventSet: TimedEvent[], dayList: number[]) {
-        self = this;
+    private getEventSet(subjectId: number, isGroup: boolean, eventSet: TimedEvent[], dayList: number[]) {
         this.heatingService.getSubjectEvents(subjectId, isGroup)
             .subscribe(
                 (events: TimedEvent[]) => {
@@ -80,7 +79,7 @@ export class WeekTimerComponent implements OnInit {
         this.getEventSet(this.subject.id, false, this.subjectEvents, this.subjectDayList);
     }
 
-    public addNewEvent = function(region: string, filter: number) {
+    public addNewEvent(region: string, filter: number) {
         if (!this.newEvents) { this.newEvents == []; }
         this.newEventFilter = filter;
         let ne = new TimedEvent();
@@ -91,12 +90,12 @@ export class WeekTimerComponent implements OnInit {
         if (ne.timeStart.getHours() > 20) {
             ne.timeStart.setHours(20);
         }
-        if (filter !== null) { ne.timeStart.setFullYear(filter); }
+        if (filter) { ne.timeStart.setFullYear(filter); }
         ne.timeEnd = new Date(ne.timeStart);
         ne.timeEnd.setHours(ne.timeStart.getHours() + 3);
         ne.action = 'timed';
         this.subjectEvents.push(ne);
-        this.setOneDayList(this.subjectEvents);
+        this.subjectDayList = this.setOneDayList(this.subjectEvents);
         this.selectedEvent = ne;
     };
 
