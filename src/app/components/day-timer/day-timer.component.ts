@@ -42,8 +42,9 @@ export class DayTimerComponent implements OnInit {
 
     private init() {
         this.handleResize(null);
-
-        this.filteredEvents = this.events.filter(e => e.timeStart.getFullYear() == this.dayFilter);
+console.log('filtering ' + this.events.length + ' events, with filter: ' + this.dayFilter)
+        this.filteredEvents = this.events.filter(e => (e.timeStart.getFullYear() < 1000 && (e.timeStart.getFullYear() & this.dayFilter) > 0) 
+            || (this.dayFilter > 127 && e.timeStart.getFullYear() > 1000));
       
         this.repeating = this.dayFilter > 0 && this.dayFilter < 1000;
         /* tslint:disable:no-bitwise */

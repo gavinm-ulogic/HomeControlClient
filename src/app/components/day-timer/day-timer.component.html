@@ -1,12 +1,4 @@
-<div class="day-timer" (window:resize)="handleResize($event)">
-    <div class="day-label">{{dayLabel}}</div>
-    <div *ngIf="isValidPeriod(selectedEvent)" class="day-buttons">
-        <span>repeating</span> <input type="checkbox" [(ngModel)]="repeating">
-        <button *ngFor="let day of dayArray" [disabled]="!repeating" (click)="day.selected=!day.selected" class="button-small" 
-            [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}">{{day.name}}</button>
-    </div>
-    <!-- <div class="action-icon" (click)="addNewEvent()"><span class="glyphicon glyphicon-plus"></span></div> -->
-    <div *ngIf="showCommit" class="action-icon" (click)="handleCommit()"><span class="glyphicon glyphicon-ok"></span></div>
+<div class="day-timer" (window:resize)="handleResize($event)">{{dayFilter + ' ' + events.length + ' ' + filteredEvents.length}}
     <div class="day-bar-wrapper">
         <div class="day-bar"></div>
         <ng-container *ngFor="let hour of hours; let idx = index">

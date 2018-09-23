@@ -30,4 +30,20 @@
         text-align: right;
         padding-bottom: 0.5em;
     }
+
+    .day-buttons {
+        display: inline-block;
+    }
+    .button-small {
+        font-size: 0.6em;
+        width: 3.2em;
+        height: 3.2em;
+        padding: 0;
+        margin: 1px;
+    }
+    .button-selected {
+        background-color: $day-button-selected;
+    }
+
+
 }
