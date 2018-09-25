@@ -1,4 +1,4 @@
-<div class="day-timer" (window:resize)="handleResize($event)">{{dayFilter + ' ' + events.length + ' ' + filteredEvents.length}}
+<div class="day-timer" (window:resize)="handleResize($event)"><!--{{dayFilter + ' ' + events.length + ' ' + filteredEvents.length}}-->
     <div class="day-bar-wrapper">
         <div class="day-bar"></div>
         <ng-container *ngFor="let hour of hours; let idx = index">

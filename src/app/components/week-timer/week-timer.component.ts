@@ -19,16 +19,14 @@ export class WeekTimerComponent implements OnInit {
     public parentDayList: number[] = [];
 
     public subjectEvents: TimedEvent[] = [];
-    public newEvents: TimedEvent[];
 
     public selectedEvent = null;
 
     public dayFilterArray: any[];
     public dayNewEventArray: any[];
-    public dayFilter = 255;
+    public dayFilter = 127;
     public repeating: boolean;
     
-    // public newEvent: string = '';
     public newEventFilter = 0;
 
     constructor(
@@ -57,21 +55,6 @@ export class WeekTimerComponent implements OnInit {
         return newList;
     };
 
-    // private getEventSet(subjectId: number, isGroup: boolean, eventSet: TimedEvent[], dayList: number[]) {
-    //     let self = this;
-    //     this.heatingService.getSubjectEvents(subjectId, isGroup)
-    //         .subscribe(
-    //             (events: TimedEvent[]) => {
-    //                 eventSet = events;
-    //                 // eventSet.push.apply(eventSet, events);
-                    
-    //                 // dayList.push.apply(dayList, this.setOneDayList(eventSet));
-    //             },
-    //             (err: any) => {
-    //                 LoggerService.log(err);
-    //             });
-    // };
-
     ngOnInit() {
       LoggerService.log('Week Timer');
     }
@@ -84,25 +67,18 @@ export class WeekTimerComponent implements OnInit {
     private init() {
         this.subjectEvents = [];
         this.subjectDayList = [];
-        // this.getEventSet(this.subject.id, false, this.subjectEvents, this.subjectDayList);
 
         let self = this;
         this.heatingService.getSubjectEvents(this.subject.id, false)
             .subscribe(
                 (events: TimedEvent[]) => {
                     self.subjectEvents = events;
-                    // eventSet.push.apply(eventSet, events);
-                    
-                    // dayList.push.apply(dayList, this.setOneDayList(eventSet));
                 },
                 (err: any) => {
                     LoggerService.log(err);
                 });        
 
-        // this.repeating = this.dayFilter > 0 && this.dayFilter < 1000;
         /* tslint:disable:no-bitwise */
-        this.dayFilter = 255;
-
         this.dayFilterArray = [
             {name: 'Mon', selected: this.dayFilter & 1, value: 1},
             {name: 'Tue', selected: this.dayFilter & 2, value: 2},
@@ -112,44 +88,7 @@ export class WeekTimerComponent implements OnInit {
             {name: 'Sat', selected: this.dayFilter & 32, value: 32},
             {name: 'Sun', selected: this.dayFilter & 64, value: 64}
         ];
-
-        // ,
-        // {name: 'Once', selected: this.dayFilter & 128, value: 128}
-
-        // this.dayNewEventArray = [
-        //     {name: 'Mon', selected: this.dayNew & 1},
-        //     {name: 'Tue', selected: this.dayNew & 2},
-        //     {name: 'Wed', selected: this.dayNew & 4},
-        //     {name: 'Thu', selected: this.dayNew & 8},
-        //     {name: 'Fri', selected: this.dayNew & 16},
-        //     {name: 'Sat', selected: this.dayNew & 32},
-        //     {name: 'Sun', selected: this.dayNew & 64},
-        //     {name: 'Once', selected: this.dayNew & 128}
-        // ];
-
-
-        
     }
-
-    public addNewEvent(region: string, filter: number) {
-        if (!this.newEvents) { this.newEvents == []; }
-        this.newEventFilter = filter;
-        let ne = new TimedEvent();
-        ne.id = 0;
-        ne.subjectType = 'heater';
-        ne.subjectId = this.subject.id;
-        ne.timeStart = new Date();
-        if (ne.timeStart.getHours() > 20) {
-            ne.timeStart.setHours(20);
-        }
-        if (filter) { ne.timeStart.setFullYear(filter); }
-        ne.timeEnd = new Date(ne.timeStart);
-        ne.timeEnd.setHours(ne.timeStart.getHours() + 3);
-        ne.action = 'timed';
-        this.subjectEvents.push(ne);
-        this.subjectDayList = this.setOneDayList(this.subjectEvents);
-        this.selectedEvent = ne;
-    };
 
     public handleEventSelected($event) {
         this.selectedEvent = $event;
@@ -157,12 +96,24 @@ export class WeekTimerComponent implements OnInit {
         this.setDayFilter(this.selectedEvent.timeStart.getFullYear() < 1000 ? this.selectedEvent.timeStart.getFullYear() : 128)
     }
 
+    setSelectedDayFilter(filter: number) {
+        if (!this.selectedEvent) return;
+
+        if (filter > 127) {
+            this.selectedEvent.timeStart.setFullYear(new Date().getFullYear);
+            this.selectedEvent.timeEnd.setFullYear(new Date().getFullYear);
+        } else {
+            this.selectedEvent.timeStart.setFullYear(filter);
+            this.selectedEvent.timeEnd.setFullYear(filter);
+        }        
+    }
+
     private setDayFilter(filter: number) {
         this.dayFilter = filter;
         for (let d of this.dayFilterArray) {
             d.selected = (filter & d.value) > 0;
         }
-        
+        this.setSelectedDayFilter(this.dayFilter);
     }
 
     public handleDayButton(day: any) {
@@ -171,29 +122,38 @@ export class WeekTimerComponent implements OnInit {
         for (let d of this.dayFilterArray) {
             this.dayFilter += (d.selected) ? d.value : 0;
         }
+        this.setSelectedDayFilter(this.dayFilter);
     }
 
     public handleWeekButton() {
-        this.dayFilter = 31;
-        for (let d of this.dayFilterArray) {
-            d.selected = d.value < 32;
-        }
+        this.setDayFilter(31);
     }
 
     public handleWeekendButton() {
-        this.dayFilter = 96;
-        for (let d of this.dayFilterArray) {
-            d.selected = d.value > 31;
-        }
+        this.setDayFilter(96);
     }
 
     public handleOnceButton() {
-        this.dayFilter = 128;
-        for (let d of this.dayFilterArray) {
-            d.selected = false;
-        }
+        this.setDayFilter(128);
     }
 
-
+    public handleAddButton() {
+        let ne = new TimedEvent();
+        ne.id = 0;
+        ne.subjectType = 'heater';
+        ne.action = 'target';
+        ne.subjectId = this.subject.id;
+        ne.timeStart = new Date();
+        if (ne.timeStart.getHours() > 20) {
+            ne.timeStart.setHours(20);
+        }
+        if (this.dayFilter < 128) {
+            ne.timeStart.setFullYear(this.dayFilter);
+        }
+        ne.timeEnd = new Date(ne.timeStart);
+        ne.timeEnd.setHours(ne.timeStart.getHours() + 3);
+        this.subjectEvents.push(ne);
+        this.selectedEvent = ne;
+    }
 
 }
