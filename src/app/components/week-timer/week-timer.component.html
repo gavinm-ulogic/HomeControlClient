@@ -5,7 +5,7 @@
             <button *ngFor="let day of dayFilterArray" (click)="handleDayButton(day)" class="button-small" 
                 [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}"><span class="button-text">{{day.name}}</span></button>
 
-            &nbsp;<button (click)="handleWeekButton()" class="button-small" 
+            &nbsp; <span class="week-buttons"><button (click)="handleWeekButton()" class="button-small" 
                 [ngClass]="{'button-selected':dayFilter==31, 'button-dark':dayFilter!=31}"><span class="button-text">Week</span></button>
 
             &nbsp;<button (click)="handleWeekendButton()" class="button-small" 
@@ -14,7 +14,7 @@
             &nbsp;<button (click)="handleOnceButton()" class="button-small" 
                 [ngClass]="{'button-selected':dayFilter==128, 'button-dark':dayFilter!=128}"><span class="button-text">Once</span></button>
             
-            &nbsp;<button (click)="handleAddButton()" class="button-small"><span class="button-text button-text-add">+</span></button>
+            &nbsp;<button (click)="handleAddButton()" class="button-small"><span class="button-text button-text-add">+</span></button></span>
         </div>
         
         <div>

@@ -33,7 +33,7 @@
 
     .day-buttons {
         display: inline-block;
-        margin: 0 20px 8px 16px;
+        margin: 8px 20px 8px 16px;
     }
     .button-small {
         width: 32px;
@@ -60,5 +60,10 @@
         display: inline-block;
     }
 
+    .week-buttons {
+        white-space: nowrap;
+        margin-top: 4px;
+        display: inline-block;
+    }
 
 }

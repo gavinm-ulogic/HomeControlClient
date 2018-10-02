@@ -2,9 +2,15 @@
     <div *ngIf="room">
         <input type="text" [(ngModel)]="room.name" (blur)="editRoomBlur()" [disabled]="!editMode" class="title1 room-title">
         <div class="info-pair">Current temp: <span class="">{{room.tempCurrent}}</span>°C</div>
-        <div class="info-pair">Target temp: {{room.tempTarget}}°C</div>
-        <div class="info-pair">Min temp: {{room.tempMin}}°C</div>
-        <div class="info-pair">Max temp: {{room.tempMax}}°C</div>
+        <div class="info-pair">Target temp: <input type="text" 
+            [(ngModel)]="tempTargetDisplay" (focus)="editRoomTempFocus('Target')" 
+            (blur)="editRoomTempBlur('Target')" [disabled]="!editMode" class="room-setting"></div>
+        <div class="info-pair">Min temp: <input type="text" 
+            [(ngModel)]="tempMinDisplay" (focus)="editRoomTempFocus('Min')" 
+            (blur)="editRoomTempBlur('Min')" [disabled]="!editMode" class="room-setting"></div>
+        <div class="info-pair">Max temp: <input type="text" 
+            [(ngModel)]="tempMaxDisplay" (focus)="editRoomTempFocus('Max')" 
+            (blur)="editRoomTempBlur('Max')" [disabled]="!editMode" class="room-setting"></div>
 
         <div class="section2">
             <div class="title2">Sensors</div>
