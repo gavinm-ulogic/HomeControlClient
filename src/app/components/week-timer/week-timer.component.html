@@ -1,21 +1,66 @@
 <div class="week-timer">
     <div class="section{{this.viewLevel}}">
-        <div class="title{{this.viewLevel}} events-text">Events <span *ngIf="subjectEvents.length==0">(none)</span></div>
+        <div class="title title{{this.viewLevel}} events-text">Events <div *ngIf="subjectEvents.length==0">(none)</div></div>
+        <div class="button-bar">
+
         <div class="day-buttons">
             <button *ngFor="let day of dayFilterArray" (click)="handleDayButton(day)" class="button-small" 
-                [ngClass]="{'button-selected':day.selected, 'button-dark':!day.selected}"><span class="button-text">{{day.name}}</span></button>
-
-            &nbsp; <span class="week-buttons"><button (click)="handleWeekButton()" class="button-small" 
-                [ngClass]="{'button-selected':dayFilter==31, 'button-dark':dayFilter!=31}"><span class="button-text">Week</span></button>
-
-            &nbsp;<button (click)="handleWeekendButton()" class="button-small" 
-                [ngClass]="{'button-selected':dayFilter==96, 'button-dark':dayFilter!=96}"><span class="button-text">W/end</span></button>
-
-            &nbsp;<button (click)="handleOnceButton()" class="button-small" 
-                [ngClass]="{'button-selected':dayFilter==128, 'button-dark':dayFilter!=128}"><span class="button-text">Once</span></button>
-            
-            &nbsp;<button (click)="handleAddButton()" class="button-small"><span class="button-text button-text-add">+</span></button></span>
+                [ngClass]="{'button-selected':day.selected}"><div class="button-text">{{day.name}}</div></button>
         </div>
+        <div class="week-buttons"><button (click)="handleWeekButton()" class="button-small extra-space" 
+                [ngClass]="{'button-selected':dayFilter==31}"><div class="button-text">Week</div></button>
+            <button (click)="handleWeekendButton()" class="button-small extra-space" 
+                [ngClass]="{'button-selected':dayFilter==96}"><div class="button-text">W/end</div></button>
+            <button (click)="handleOnceButton()" class="button-small extra-space" 
+                [ngClass]="{'button-selected':dayFilter==128}"><div class="button-text">Once</div></button>
+            <button (click)="handleAddButton()" class="button-small extra-space"><div class="button-text button-text-add">+</div></button>
+
+            <div *ngIf="selectedEvent" class="action" (click)="handleEventAction()">
+                <svg *ngIf="selectedEvent.action=='timed'" xmlns="http://www.w3.org/2000/svg" height="32" width="32">
+                    <g class="timer-icon" transform="scale(0.32)">
+                        <circle class="selected" role="presentation"
+                            r="45"
+                            cx="50"
+                            cy="50"
+                            stroke="white"
+                            stroke-width="10"
+                            fill="none" 
+                        />
+                        <line x1="50" y1="50" x2="35" y2="15"  
+                            stroke="white"
+                            stroke-width="10"
+                        />
+                        <line x1="50" y1="50" x2="75" y2="65"  
+                            stroke="white"
+                            stroke-width="10"
+                        />
+                    </g>                
+                </svg>
+
+                <svg *ngIf="selectedEvent.action=='target'" xmlns="http://www.w3.org/2000/svg" height="32" width="32">
+                    <g class="timer-icon" transform="scale(0.32)">
+                        <circle class="selected" role="presentation"
+                            r="42"
+                            cx="50"
+                            cy="50"
+                            stroke="white"
+                            stroke-width="18"
+                            fill="none" 
+                        />
+                        <circle class="selected" role="presentation"
+                            r="9"
+                            cx="50"
+                            cy="50"
+                            stroke="white"
+                            stroke-width="18"
+                            fill="none" 
+                        />
+                    </g>                
+                </svg>
+            </div>
+
+        </div>
+    </div>
         
         <div>
             <div class="app-day-timer-content"><app-day-timer [events]="subjectEvents" [dayFilter]="dayFilter" 

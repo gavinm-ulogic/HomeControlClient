@@ -2,13 +2,12 @@
 @import "../../../style/panes.scss";
 
 .week-timer {
-    font-size: 1em;
-    .day-timer-label {
+    .title {
         display: inline-block;
-        width: 5em;
-        padding-top:6px;
         vertical-align: top;
+        margin: 8px 0;
     }
+
     .day-timer-content {
         display: inline-block;
     }
@@ -31,15 +30,34 @@
         padding-bottom: 0.5em;
     }
 
+    .button-bar {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 20px;
+    }
+
     .day-buttons {
         display: inline-block;
-        margin: 8px 20px 8px 16px;
+        vertical-align: top;
+        margin: 0px 8px 8px 0;
     }
+
+    .week-buttons {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0px 8px 8px 0;
+    }
+
     .button-small {
+        display: inline-block;
+        vertical-align: top;
         width: 32px;
         height: 32px;
         padding: 0;
         margin: 1px;
+    }
+    .extra-space {
+        margin: 0 8px 0 0;
     }
     .button-selected {
         background-color: $day-button-selected;
@@ -53,6 +71,7 @@
 
     .button-text-add {
         font-size: 32px;
+        vertical-align: middle;
         font-weight: 900;
     }
 
@@ -60,10 +79,10 @@
         display: inline-block;
     }
 
-    .week-buttons {
-        white-space: nowrap;
-        margin-top: 4px;
+    .action {
         display: inline-block;
+        height: 32px;
+        width: 32px;
     }
 
 }

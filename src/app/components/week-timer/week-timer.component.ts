@@ -156,4 +156,15 @@ export class WeekTimerComponent implements OnInit {
         this.selectedEvent = ne;
     }
 
+    public handleEventAction() {
+        switch (this.selectedEvent.action) {
+            case ('timed'):
+                this.selectedEvent.action = 'target';
+                break;
+            case ('target'):
+                this.selectedEvent.action = 'timed';
+                break;
+        }
+    }
+
 }

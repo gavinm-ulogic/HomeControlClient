@@ -14,7 +14,6 @@
         background-color: $day-button-selected;
     }
     .action-icon {
-        //display: inline-block;
         float: right;
         width: 1em;
         height: 1em;
@@ -38,7 +37,6 @@
         position: relative;
         width: 100%;
         height: $bar-height + 20px;
-        // background-color: blue;
         .hour-text {
             position: absolute;
             font-size: 0.6em;
@@ -46,7 +44,6 @@
         }
         .day-bar {
             position: absolute;
-            // width: calc(100% - 20px);
             left: 10px;
             right: 10px;
             top: $bar-margin-top;
@@ -67,11 +64,17 @@
             background-color: $day-period-fill;
             opacity: 0.4;
         }
+        .period-timed {
+            background-color: $day-period-timed-fill;
+        }
         .period-new {
             background-color: $period-new;
         }
         .period-selected {
             background-color: $period-selected;
+        }
+        .period-timed-selected {
+            background-color: $period-timed-selected;
         }
         .period-select-handle {
             position: absolute;

@@ -8,7 +8,7 @@
         <ng-container *ngFor="let timedEvent of filteredEvents">
             <ng-container *ngIf="isValidPeriod(timedEvent)">
                 <div 
-                    class="period" [ngClass]="{'period-selected' : timedEvent == selectedEvent, 'timedEvent-new': timedEvent.id <= 0}"
+                    class="period" [ngClass]="{'period-timed': timedEvent.action == 'timed', 'period-selected': timedEvent == selectedEvent, 'timedEvent-new': timedEvent.id <= 0}"
                     [ngStyle]="{'left': getPeriodStartX(timedEvent) + 'px', 'width': getPeriodWidth(timedEvent) + 'px'}"
                     (tap)="onTapPeriod($event, timedEvent)"
                     (panstart)="onDragPeriod($event, timedEvent)" (pan)="onDragPeriod($event, timedEvent)" (panend)="onDragPeriod($event, timedEvent)"     
