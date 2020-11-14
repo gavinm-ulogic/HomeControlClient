@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  // API_BASE: 'http://localhost:52414/api/'
-  API_BASE: 'http://192.168.0.20/homecontrol/server/api/'    
+  API_BASE: 'http://localhost:52414/api/'
+  // API_BASE: 'http://192.168.68.200/homecontrol/server/api/'    
 };

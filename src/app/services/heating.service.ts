@@ -9,10 +9,11 @@ import { Status } from '../models/status';
 import { Room } from '../models/room';
 import { Sensor } from '../models/sensor';
 import { Heater } from '../models/heater';
-import { TimedEvent } from '../models/timed-event';
+import { TimedEvent, TimedEventPeriod } from '../models/timed-event';
 
 import { Injectable } from '@angular/core';
 import { LoggerService } from './logger.service';
+
 
 @Injectable()
 export class HeatingService {
@@ -87,6 +88,17 @@ export class HeatingService {
       // .catch(error => self.handleError(error));
   };
 
+  private getEventListFromServer(dataProcessor: Function = null): Observable<TimedEvent[]> {
+    let self = this;
+    return self.http.get(Environment.API_BASE + 'events').pipe(
+      map((res: TimedEvent[]) => {
+        self.theEvents = TimedEvent.mapMany(res);
+        if (dataProcessor) { dataProcessor.call(self, self.theEvents); }
+        return self.theEvents || [];
+      }))
+      // .catch(error => self.handleError(error));
+  };
+
   private getRoomListFromServer(roomList: Room[], dataProcessor: Function = null): Observable<Room[]> {
     let self = this;
     return self.http.get(Environment.API_BASE + 'rooms').pipe(
@@ -105,13 +117,12 @@ export class HeatingService {
     if (!roomList) { return null; }
     for (let room of roomList) {
       let temp = -999;
-      let cnt = 0;
+      if (!room.sensors) { room.sensors = []; }
       for (let sensor of room.sensors) {
-        temp = (cnt === 0) ? sensor.reading : temp + sensor.reading;
-        cnt++;
+        temp = (sensor === room.sensors[0]) ? sensor.reading : temp + sensor.reading;
       }
-      if (cnt > 0) { temp = temp / cnt; }
-      room.tempCurrent = room.sensors[0].reading;
+      if (room.sensors.length > 1) { temp = temp / room.sensors.length; }
+      room.tempCurrent = temp;
       room.summary = (room.tempCurrent === -999) ? '' : room.tempCurrent + '°C';
     }
     return roomList;
@@ -120,8 +131,7 @@ export class HeatingService {
   private processEventData(eventList: TimedEvent[]): TimedEvent[] {
     if (!eventList) { return null; }
     for (let timedEvent of eventList) {
-      timedEvent.timeStart = new Date(timedEvent.timeStart);
-      timedEvent.timeEnd = new Date(timedEvent.timeEnd);
+      timedEvent.periodObj = new TimedEventPeriod(timedEvent.period);
     }
     return eventList;
   };
@@ -179,8 +189,8 @@ export class HeatingService {
     return this.getRoomListFromServer(this.theRooms, this.processRoomData);
   };
 
-  public getEvents(): Observable<Room[]> {
-    return <Observable<Room[]>>this.getObjectListFromServer(this.theEvents, 'events', this.processEventData);
+  public getEvents(): Observable<TimedEvent[]> {
+    return this.getEventListFromServer(this.processEventData);
   };
 
 

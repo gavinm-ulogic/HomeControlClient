@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { LoggerService } from '../../services/logger.service';
 import { HeatingService } from '../../services/heating.service';
-import { TimedEvent } from '../../models/timed-event';
+import { TimedEvent, TimedEventPeriod } from '../../models/timed-event';
 
 @Component({
   selector: 'app-week-timer',
@@ -20,7 +20,7 @@ export class WeekTimerComponent implements OnInit {
 
     public subjectEvents: TimedEvent[] = [];
 
-    public selectedEvent = null;
+    public selectedEvent: TimedEvent = null;
 
     public dayFilterArray: any[];
     public dayNewEventArray: any[];
@@ -90,21 +90,19 @@ export class WeekTimerComponent implements OnInit {
         ];
     }
 
-    public handleEventSelected($event) {
+    public handleEventSelected($event: TimedEvent) {
         this.selectedEvent = $event;
 
-        this.setDayFilter(this.selectedEvent.timeStart.getFullYear() < 1000 ? this.selectedEvent.timeStart.getFullYear() : 128)
+        this.setDayFilter(this.selectedEvent.periodObj.absoluteDate ? 128 : this.selectedEvent.periodObj.days);
     }
 
     setSelectedDayFilter(filter: number) {
         if (!this.selectedEvent) return;
 
         if (filter > 127) {
-            this.selectedEvent.timeStart.setFullYear(new Date().getFullYear);
-            this.selectedEvent.timeEnd.setFullYear(new Date().getFullYear);
+            throw('not implemented');
         } else {
-            this.selectedEvent.timeStart.setFullYear(filter);
-            this.selectedEvent.timeEnd.setFullYear(filter);
+            this.selectedEvent.periodObj.setDays(filter);
         }        
     }
 
@@ -139,19 +137,25 @@ export class WeekTimerComponent implements OnInit {
 
     public handleAddButton() {
         let ne = new TimedEvent();
+        let nowTime = new Date();
         ne.id = 0;
         ne.subjectType = 'heater';
         ne.action = 'target';
         ne.subjectId = this.subject.id;
-        ne.timeStart = new Date();
-        if (ne.timeStart.getHours() > 20) {
-            ne.timeStart.setHours(20);
-        }
+
         if (this.dayFilter < 128) {
-            ne.timeStart.setFullYear(this.dayFilter);
+            ne.period = this.dayFilter.toString();
         }
-        ne.timeEnd = new Date(ne.timeStart);
-        ne.timeEnd.setHours(ne.timeStart.getHours() + 3);
+
+        if (nowTime.getHours() >= 20) {
+            ne.period += '-' + (20 * 3600).toString();
+        } else {
+            ne.period += '-' + (nowTime.getHours() * 3600 + nowTime.getMinutes() * 60 + nowTime.getSeconds()).toString();
+        }
+        ne.period += '-' + (3 * 3600).toString();
+
+        ne.periodObj = new TimedEventPeriod(ne.period);
+
         this.subjectEvents.push(ne);
         this.selectedEvent = ne;
     }
