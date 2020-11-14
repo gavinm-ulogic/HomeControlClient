@@ -41,37 +41,35 @@ export class TimedEventPeriod {
         this.code = `${(this.absoluteDate ? this.formatDate(this.absoluteDate) : this.days)}-${this.time}-${this.duration}`;
     }
 
-    // public setTime(timeSecs: number) {
-    //     this.time = timeSecs;
-    //     this.refreshCode();
-    // }
-
     public setDays(days: number): void {
         this.days = days;
         this.refreshCode();
     }
 
-    public setTime(time: number): void {
-        this.time = time;
+    public setDuration(durationSecs: number): void {
+        durationSecs = Math.round(durationSecs);
+        if (durationSecs < 0) { durationSecs = 0; }
+        if (this.time + durationSecs > 86400) { durationSecs = 86400 - this.time; }
+        this.duration = durationSecs;
+        this.refreshCode();
+    }
+
+    public setTime(timeSecs: number): void {
+        timeSecs = Math.round(timeSecs);
+        if (timeSecs < 0) { timeSecs = 0; }
+        this.time = timeSecs;
         this.refreshCode();
     }
 
     public shiftTime(timeSecs: number): void {
+        timeSecs = Math.round(timeSecs);
+        if (timeSecs < 0) { timeSecs = 0; }
         if (timeSecs >= this.time + this.duration) {
             this.time = this.time + this.duration;
             this.duration = 0;
         } else {
-            this.time = timeSecs;
             this.duration = this.duration + this.time - timeSecs;
-        }
-        this.refreshCode();
-    }
-
-    public shiftDuration(timeSecs: number): void {
-        if (timeSecs <= this.time) {
-            this.duration = 0;
-        } else {
-            this.duration = timeSecs - this.time;
+            this.time = timeSecs;
         }
         this.refreshCode();
     }
@@ -84,13 +82,8 @@ export class TimedEvent {
     subjectId: number;
     subjectType: string;
     period: string;
-    periodObj: TimedEventPeriod;
+    periodObj: TimedEventPeriod = new TimedEventPeriod('');
     action: string;
-
-    // public setTime(timeSecs: number) {
-    //     this.periodObj.setTime(timeSecs);
-    //     this.period = this.periodObj.code;
-    // }
 
     public static mapMany(sourceList: TimedEvent[]): TimedEvent[] {
         const retList: TimedEvent[] = [];
@@ -113,18 +106,18 @@ export class TimedEvent {
         this.period = this.periodObj.code;
     }
 
-    public setTime(time: number): void {
-        this.periodObj.setTime(time);
+    public setDuration(duration: number): void {
+        this.periodObj.setDuration(duration);
+        this.period = this.periodObj.code;
+    }
+
+    public setTime(timeSecs: number): void {
+        this.periodObj.setTime(timeSecs);
         this.period = this.periodObj.code;
     }
 
     public shiftTime(timeSecs: number): void {
         this.periodObj.shiftTime(timeSecs);
-        this.period = this.periodObj.code;
-    }
-
-    public shiftDuration(timeSecs: number): void {
-        this.periodObj.shiftDuration(timeSecs);
         this.period = this.periodObj.code;
     }
 }

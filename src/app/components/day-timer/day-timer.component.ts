@@ -16,9 +16,7 @@ export class DayTimerComponent implements OnInit {
     @Input() selectedEvent: TimedEvent;
     @Output() onEventSelected = new EventEmitter<TimedEvent>();
 
-    // public dragPeriod: any = null;
-    // public dayStart: Date;
-    // public dayEnd: Date;
+    public dragPeriod: TimedEvent = null;
 
     public hours: number[] = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0 ];
     public ctrlWidth = 320;
@@ -102,14 +100,9 @@ export class DayTimerComponent implements OnInit {
     }
     
     public setDragPeriod(timedEvent: TimedEvent) {
-        // this.dragPeriod = {};
-        // this.dragPeriod.timeStart = new Date(period.timeStart);
-        // this.dragPeriod.timeEnd = new Date(period.timeEnd);
-
-        // this.dayStart = new Date(period.timeStart);
-        // this.dayStart.setHours(0, 0, 0, 0);
-        // this.dayEnd = new Date(this.dayStart);
-        // this.dayEnd.setHours(23, 59, 59, 999);
+        this.dragPeriod = new TimedEvent();
+        this.dragPeriod.setTime(timedEvent.periodObj.time);
+        this.dragPeriod.setDuration(timedEvent.periodObj.duration);
     };
 
     public convertPixelToMilliseconds(value: number) {
@@ -139,7 +132,7 @@ export class DayTimerComponent implements OnInit {
     };
 
     public onTapPeriod($event: any, timedEvent: TimedEvent) {
-      LoggerService.log('onTapPeriod');
+        LoggerService.log('onTapPeriod');
         if (this.selectedPeriod === timedEvent) {
             this.selectedPeriod = null;
             this.onEventSelected.emit(this.selectedPeriod);
@@ -150,26 +143,19 @@ export class DayTimerComponent implements OnInit {
         }
     };
 
-    private periodDeleteIfEmpty(period: any): boolean {
-        // let self = this;
-        // let testStart = new Date(period.timeStart);
-        // let testEnd = new Date(period.timeEnd);
-        // if (testStart.getTime() === testEnd.getTime()) {
-        //     if (period.id > 0) {
-        //         self.heatingService.deleteEvent(period)
-        //             .subscribe( (res: any) => {
-        //                 period = {};
-        //                 self.selectedPeriod = null;
-        //             });
-        //     } else {
-        //         period = {};
-        //         this.selectedPeriod = null;
-        //     }
-        //     LoggerService.log('DayTimer.periodDeleteIfEmpty period deleted');
-        //     this.onEventSelected.emit(null);
-        //     return true;
-        // }
-        return false;
+    private deleteEvent(timedEvent: TimedEvent): void {
+        timedEvent = null;
+        this.selectedPeriod = null;        
+        this.onEventSelected.emit(null);
+
+        if (timedEvent.id > 0) {
+            this.heatingService.deleteEvent(timedEvent)
+                .subscribe( (res: any) => {
+                    timedEvent = null;
+                    this.selectedPeriod = null;
+                });
+        }
+        LoggerService.log('DayTimer.deleteEvent: timed event deleted');
     };
 
     public onDragPeriod($event: any, timedEvent: TimedEvent) {
@@ -179,10 +165,10 @@ export class DayTimerComponent implements OnInit {
                 this.setDragPeriod(timedEvent);
                 break;
             case 'pan':
-                timedEvent.setTime(this.convertPixelToSeconds($event.deltaX));
+                timedEvent.setTime(this.dragPeriod.periodObj.time + this.convertPixelToSeconds($event.deltaX));
                 break;
             case 'panend':
-                // this.dragPeriod = null;
+                this.dragPeriod = null;
                 break;
         }
     };
@@ -194,11 +180,15 @@ export class DayTimerComponent implements OnInit {
                 this.setDragPeriod(timedEvent);
                 break;
             case 'pan':
-                timedEvent.shiftTime(this.convertPixelToSeconds($event.deltaX));
+                LoggerService.log(`onDragTimeStart.pan ${this.dragPeriod.periodObj.time} ${this.convertPixelToSeconds($event.deltaX)}`);
+                timedEvent.shiftTime(this.dragPeriod.periodObj.time + this.convertPixelToSeconds($event.deltaX));
                 break;
             case 'panend':
-                // this.dragPeriod = null;
-                if (this.periodDeleteIfEmpty(timedEvent)) { this.init(); }
+                this.dragPeriod = null;
+                if (!timedEvent.periodObj.duration) {
+                    this.deleteEvent(timedEvent);
+                    this.init();
+                }
                 break;
         }
     };
@@ -210,25 +200,24 @@ export class DayTimerComponent implements OnInit {
                 this.setDragPeriod(timedEvent);
                 break;
             case 'pan':
-                timedEvent.shiftDuration(this.convertPixelToSeconds($event.deltaX));
+                timedEvent.setDuration(this.dragPeriod.periodObj.duration + this.convertPixelToSeconds($event.deltaX));
                 break;
             case 'panend':
-                // this.dragPeriod = null;
-                if (this.periodDeleteIfEmpty(timedEvent)) { this.init(); }
+                this.dragPeriod = null;
+                if (!timedEvent.periodObj.duration) {
+                    this.deleteEvent(timedEvent);
+                    this.init();
+                }
                 break;
         }
     };
 
-    public commitPeriodUpdate(period: any) {
+    public commitPeriodUpdate(timedEvent: TimedEvent) {
         let self = this;
         let formatted: string;
-        formatted = this.datePipe.transform(period.timeStart, 'yyyyMMdd HH:mm:ss');
-        if (formatted.indexOf(' ') === 6) { formatted = '00' + formatted; } period.timeStartStr = formatted;
-        formatted = this.datePipe.transform(period.timeEnd, 'yyyyMMdd HH:mm:ss');
-        if (formatted.indexOf(' ') === 6) { formatted = '00' + formatted; } period.timeEndStr = formatted;
-        this.heatingService.saveEvent(period)
+        this.heatingService.saveEvent(timedEvent)
             .subscribe( (res: any) => {
-                period.id = res.id;
+                timedEvent.id = res.id;
             });
     };
     
