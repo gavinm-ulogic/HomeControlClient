@@ -126,7 +126,6 @@
       }
     }
   },
-  "defaultProject": "home-control-client",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
