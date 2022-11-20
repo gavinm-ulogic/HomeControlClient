@@ -13,25 +13,23 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/cdk": "^6.4.7",
-    "@angular/cli": "^6.2.3",
-    "@angular/common": "^6.1.8",
-    "@angular/compiler": "^6.1.8",
-    "@angular/core": "^6.1.8",
-    "@angular/forms": "^6.1.8",
-    "@angular/http": "^6.1.8",
+    "@angular/cli": "^8.3.29",
+    "@angular/common": "^8.2.14",
+    "@angular/compiler": "^8.2.14",
+    "@angular/core": "^8.2.14",
+    "@angular/forms": "^8.2.14",
     "@angular/material": "^6.4.7",
-    "@angular/platform-browser": "^6.1.8",
-    "@angular/platform-browser-dynamic": "^6.1.8",
-    "@angular/router": "^6.1.8",
+    "@angular/platform-browser": "^8.2.14",
+    "@angular/platform-browser-dynamic": "^8.2.14",
+    "@angular/router": "^8.2.14",
     "core-js": "^2.4.1",
-    "rxjs": "^6.3.2",
+    "rxjs": "^6.6.7",
     "tslib": "^1.8.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",
-    "@angular/compiler-cli": "^6.1.8",
+    "@angular/compiler-cli": "^8.2.14",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "jasmine-core": "~2.5.2",
@@ -42,9 +40,10 @@
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "node-sass": "^8.0.0",
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.9.2"
+    "typescript": "~3.5.3"
   }
 }
