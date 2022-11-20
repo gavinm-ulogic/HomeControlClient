@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --aot --base-href /homecontrol/client/assets",
+    "build": "ng build --configuration production --aot --base-href /homecontrol/client/assets",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -13,22 +13,22 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/cli": "^11.2.19",
-    "@angular/common": "^11.2.14",
-    "@angular/compiler": "^11.2.14",
-    "@angular/core": "^11.2.14",
-    "@angular/forms": "^11.2.14",
-    "@angular/platform-browser": "^11.2.14",
-    "@angular/platform-browser-dynamic": "^11.2.14",
-    "@angular/router": "^11.2.14",
+    "@angular/cli": "^12.2.18",
+    "@angular/common": "^12.2.16",
+    "@angular/compiler": "^12.2.16",
+    "@angular/core": "^12.2.16",
+    "@angular/forms": "^12.2.16",
+    "@angular/platform-browser": "^12.2.16",
+    "@angular/platform-browser-dynamic": "^12.2.16",
+    "@angular/router": "^12.2.16",
     "core-js": "^2.4.1",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1102.19",
-    "@angular/compiler-cli": "^11.2.14",
+    "@angular-devkit/build-angular": "~12.2.18",
+    "@angular/compiler-cli": "^12.2.16",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~3.6.0",
@@ -43,6 +43,6 @@
     "protractor": "~7.0.0",
     "ts-node": "~2.0.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.8"
+    "typescript": "~4.3.5"
   }
 }
